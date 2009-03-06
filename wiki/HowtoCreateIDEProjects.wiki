@@ -1,0 +1,28 @@
+#labels Featured,Phase-Implementation
+# How the repository is used
+
+Inside the /trunk folder there are two folders:
+Server and Client
+
+Server is the webbapplication, JSP web application (template from oddoneout).
+Client is the MIDP-application.
+
+
+=Server=
+_How to create the server project in Netbeans:_
+
+  # Create new pweb application from existing sources.
+  # Source location: errandbarter/server/
+  # Project name/folder: whatever. I use "ErrandBarterServerProject"
+  # Netbeans should automatically find web folder and WEB-INF
+  # libraries is the server/lib folder
+  # Source package should be errandbarter/server/src/java/
+
+
+=Client=
+_How to create the client project in Netbeans:_
+
+  # Create new mobile project with existing MIDP sources.
+  # Select errandbarter/client/src/ as source and it should find the JAD-file automatically.
+
+*remember not to put any IDE-specific files inside the svn*
