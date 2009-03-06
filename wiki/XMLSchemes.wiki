@@ -1,0 +1,28 @@
+==Propsed XML schemes:==
+List of errands:
+<errands>
+  <errand id="123123" timeout="1234567890" user="olle" price="50"> // unix timestamp of timeout
+     <location lat="12312323" long="123124" range="300">Hotel Ravishankar</location> // range in meters, text data is arbitrary user input
+     <description>What is the name of the really cute waitress in the bar?</description>
+  </errand>
+
+  <errand ...>...< />
+  ...
+</errands>
+
+==User info:==
+<userinfo user="olle" balance="340" disposablebalance="130">
+  <pending>
+     <errand .... />
+     ...
+  </pending>
+  <done>
+     <errand... />
+  </done>
+</userinfo>
+
+==Create new errand:==
+  <errand timeout="1234567890" user="olle" price="50"> // unix timestamp of timeout
+     <location lat="12312323" long="123124" range="300">Hotel Ravishankar</location> // range in meters, text data is arbitrary user input
+     <description>What is the name of the really cute waitress in the bar?</description>
+  </errand>
