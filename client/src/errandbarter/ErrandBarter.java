@@ -14,6 +14,8 @@ import javax.microedition.midlet.MIDletStateChangeException;
  */
 public class ErrandBarter extends MIDlet {
 
+    ServerConnection serverConnection;
+
     protected void startApp() throws MIDletStateChangeException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
