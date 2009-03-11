@@ -1,8 +1,8 @@
 #summary One-sentence summary of this page.
 #labels Phase-Implementation
 
-= List errands in location =
-/list?x=3.234&y=234.34&range=300
+= List errands in location / view errand =
+/list?x=3.234&y=234.34&range=300 optional: &id=32432
 
 <errands>
 
