@@ -53,9 +53,9 @@ public class ServerConnection {
             }
         }
 
-        for (int i = 0; i < root.getChildCount(); i++) {
-            if (root.getChild(i) instanceof Element) {
-                Element element = (Element) root.getChild(i);
+        try {
+            for (int i = 0; i < root.getChildCount(); i++) {
+                Element element = root.getElement(i);
                 if (element.getName().equalsIgnoreCase("balance")) {
                     balance = Integer.parseInt(element.getText(0));
                 } else if (element.getName().equalsIgnoreCase("disposablebalance")) {
@@ -63,7 +63,10 @@ public class ServerConnection {
                 } else if (element.getName().equalsIgnoreCase("reliability")) {
                     realiability = Double.parseDouble(element.getText(0));
                 }
+
             }
+        } catch (NumberFormatException e) {
+            throw new OperationException(e.getMessage());
         }
 
         if (id == null) {
@@ -73,37 +76,164 @@ public class ServerConnection {
         return new User(id, balance, disposableBalance, realiability);
     }
 
-    public Vector listErrands() {
+    public Vector listErrands() throws OperationException {
+
+
+        Document d = fetch("list", new String[]{"latitude=3.4", "longitude=4.5"}); // TODO: insert real values
+
+        Element root = d.getRootElement();
+
+        Vector errands = new Vector();
+
+        for (int i = 0; i < root.getChildCount(); i++) {
+            Element errandElement = root.getElement(i);
+            if (errandElement.getName().equalsIgnoreCase("errand")) {
+                errands.addElement(createErrand(root));
+            }
+
+        }
+
+        return errands;
+    }
+
+    private Vector createAnswers(Element root) throws OperationException {
         /*
-         <errands>
+        <answers>
+        <answer id="2145442" user="Peter" timestamp="xxx" latitude="x" longitude="y" pointsRewarded="0">
+        Amy
+        </answer>
+        </answers>
+         */
 
-            <errand id="123123" timeout="1234567890" user="gussoh" price="50">
-            // unix timestamp of timeout
+        Vector answers = new Vector();
 
-            <location latitude="123.12323" longitude="12.3124" range="300">
-                Hotel Ravishankar
-            </location>
-            // range in meters, text data is arbitrary user input
+        int id = 0;
+        String user = null;
+        int timestamp = 0;
+        double latitude = 0, longitude = 0;
+        int pointsRewarded = 0;
+        String answer = null;
 
-            <description>
-                What is the name of the really cute waitress in the bar?
-            </description>
+        for (int i = 0; i < root.getChildCount(); i++) {
+            if (root.getElement(i).getName().equalsIgnoreCase("answer")) {
+                Element answerElement = root.getElement(i);
 
-            <answers>
-                <answer id="2145442" user="Peter" timestamp="xxx" latitude="x" longitude="y" pointsRewarded="0">
-                Amy
-                </answer>
-            </answers>
+                answer = answerElement.getText(0);
 
-            </errand>
+                try {
+                    for (int j = 0; j < answerElement.getAttributeCount(); j++) {
+                        if (answerElement.getAttributeName(j).equalsIgnoreCase("id")) {
+                            id = Integer.parseInt(answerElement.getAttributeValue(j));
+                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("user")) {
+                            user = answerElement.getAttributeValue(j);
+                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("timestamp")) {
+                            timestamp = Integer.parseInt(answerElement.getAttributeValue(j));
+                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("latitude")) {
+                            latitude = Double.parseDouble(answerElement.getAttributeValue(j));
+                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("longitude")) {
+                            longitude = Double.parseDouble(answerElement.getAttributeValue(j));
+                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("pointsRewarded")) {
+                            pointsRewarded = Integer.parseInt(answerElement.getAttributeValue(j));
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    throw new OperationException(e.getMessage());
+                }
 
-            <errand ...>...< /> ...
+                Location location = new Location(latitude, longitude);
+                answers.addElement(new Answer(id, user, answer, timestamp, location, pointsRewarded));
+            }
+        }
+
+        return answers;
+    }
+
+    private Errand createErrand(Element root) throws OperationException {
+
+        /*
+        <errands>
+
+        <errand id="123123" timeout="1234567890" user="gussoh" price="50">
+        // unix timestamp of timeout
+
+        <location latitude="123.12323" longitude="12.3124" range="300">
+        Hotel Ravishankar
+        </location>
+        // range in meters, text data is arbitrary user input
+
+        <description>
+        What is the name of the really cute waitress in the bar?
+        </description>
+
+        <answers>
+        <answer id="2145442" user="Peter" timestamp="xxx" latitude="x" longitude="y" pointsRewarded="0">
+        Amy
+        </answer>
+        </answers>
+
+        </errand>
+
+        <errand ...>...< /> ...
 
         </errands>
 
          */
+        int id = 0;
+        int timeout = 0;
+        String user = null;
+        int price = 0;
+        Location location = null;
+        String description = null;
+        Vector answers = null;
 
-        return null;
+        for (int i = 0; i < root.getChildCount(); i++) {
+            Element element = root.getElement(i);
+            if (element.getName().equalsIgnoreCase("location")) {
+                location = createLocation(element);
+            } else if (element.getName().equalsIgnoreCase("description")) {
+                description = element.getText(0);
+            } else if (element.getName().equalsIgnoreCase("answers")) {
+                answers = createAnswers(element);
+            }
+        }
+
+        return new Errand(id, user, location, description, timeout, price, answers);
+    }
+
+    private Location createLocation(Element root) throws OperationException {
+        /*<location latitude="123.12323" longitude="12.3124" range="300">
+        Hotel Ravishankar
+        </location>*/
+
+        double latitude = 0, longitude = 0;
+        int range = Location.RANGE_UNDEFINED;
+        String name = root.getText(0);
+
+        boolean latitudeFound = false, longitudeFound = false;
+
+        try {
+            for (int i = 0; i < root.getAttributeCount(); i++) {
+                if (root.getAttributeName(i).equalsIgnoreCase("latitude")) {
+                    latitudeFound = true;
+                    latitude = Double.parseDouble(root.getAttributeValue(i));
+                } else if (root.getAttributeName(i).equalsIgnoreCase("longitude")) {
+                    longitudeFound = true;
+                    longitude = Double.parseDouble(root.getAttributeValue(i));
+                } else if (root.getAttributeName(i).equalsIgnoreCase("range")) {
+                    range = Integer.parseInt(root.getAttributeValue(i));
+                }
+            }
+        } catch (NumberFormatException e) {
+            throw new OperationException(e.getMessage());
+        }
+
+        if (latitudeFound && longitudeFound) {
+            return new Location(latitude, longitude, range, name);
+        } else {
+            throw new OperationException("Missing latitude or longitude coordinates.");
+        }
+
+
     }
 
     private Document fetch(String path, String[] variables) throws OperationException {
@@ -136,18 +266,17 @@ public class ServerConnection {
 
             if (root.getName().equalsIgnoreCase("response")) {
                 for (int i = 0; i < d.getChildCount(); i++) {
-                    if (d.getChild(i) instanceof Element) {
-                        Element element = (Element) d.getChild(i);
-                        if (element.getName().equalsIgnoreCase("status")) {
-                            statusFound = true;
-                            String response = element.getText(0);
-                            if (!response.equalsIgnoreCase("ok")) {
-                                error = true;
-                            }
-                        } else if (element.getName().equalsIgnoreCase("message")) {
-                            message = element.getText(0);
+                    Element element = d.getElement(i);
+                    if (element.getName().equalsIgnoreCase("status")) {
+                        statusFound = true;
+                        String response = element.getText(0);
+                        if (!response.equalsIgnoreCase("ok")) {
+                            error = true;
                         }
+                    } else if (element.getName().equalsIgnoreCase("message")) {
+                        message = element.getText(0);
                     }
+
                 }
 
                 if (error) {
