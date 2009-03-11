@@ -1,0 +1,97 @@
+#summary One-sentence summary of this page.
+#labels Phase-Implementation
+
+= List errands in location =
+/list?x=3.234&y=234.34&range=300
+
+<errands>
+
+    <errand id="123123" timeout="1234567890" user="olle" userReliability="1.0" price="50">
+    // unix timestamp of timeout
+
+        <location lat="12312323" long="123124" range="300">
+
+        Hotel Ravishankar
+
+        </location>
+
+        // range in meters, text data is arbitrary user input
+
+        <description>
+
+        What is the name of the really cute waitress in the bar?
+
+        </description>
+
+    </errand>
+
+    <errand ...>...< /> ... 
+
+</errands>
+
+= Accept completed errands =
+
+/run?user=Gussoh?id=123123&latitude=12312323&longitude=123124&answer=Amy
+// location of user running errand, optional
+
+response from server:
+
+<response>
+  <status>OK</status> // OK || ERROR
+  <message></message>
+</response>
+
+= send errand status of own errands =
+
+/listMyErrands?user=gussoh
+
+Response:
+
+<errands>
+
+    <errand id="123123" timeout="1234567890" user="olle" price="50">
+
+    // unix timestamp of timeout
+
+        <location latitude="123.12323" longitude="12.3124" range="300">
+
+        Hotel Ravishankar
+
+        </location>
+
+        // range in meters, text data is arbitrary user input
+
+        <description>
+
+        What is the name of the really cute waitress in the bar?
+
+        </description>
+
+        <answers>
+             <answer id="2145442" user="Peter" timestamp="xxx" latitude="x" longitude="y">
+                  Amy
+             </answer>
+        </answers>
+
+    </errand>
+
+    <errand ...>...< /> ... 
+
+</errands>
+
+= Give reward =
+
+/reward?id=2145442
+
+response:
+
+<response>
+  <status>OK</status> // OK || ERROR
+  <message></message>
+</response>
+
+
+<response>
+  <status>ERROR/status> // OK || ERROR
+  <message>Already rewarded</message>
+</response>
