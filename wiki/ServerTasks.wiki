@@ -166,6 +166,8 @@ response:
 
 response:
 
-<users>
-  <userinfo user="olle" balance="340" disposablebalance="130" reliability="0.743" />
-<users>
+<user id="olle">
+   <balance>340</balance>
+   <disposablebalance>130</disposablebalance>
+   <reliability>0.743</reliability>
+<user>
