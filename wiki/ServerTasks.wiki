@@ -3,7 +3,7 @@
 
 = List errands in location  =
 
-/list?x=3.234&y=234.34 (range parameter is optional)
+/list?latitude=3.234&longitude=234.34 (range parameter is optional)
 {{{
 <errands>
 
