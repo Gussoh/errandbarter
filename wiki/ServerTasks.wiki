@@ -41,7 +41,7 @@ response from server:
   <message></message>
 </response>
 
-= send errand status of own errands =
+= View own errands =
 
 /listMyErrands?user=gussoh
 
