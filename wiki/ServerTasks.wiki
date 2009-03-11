@@ -98,7 +98,7 @@ Response:
         </description>
 
         <answers>
-             <answer id="2145442" user="Peter" timestamp="xxx" latitude="x" longitude="y">
+             <answer id="2145442" user="Peter" timestamp="xxx" latitude="x" longitude="y" pointsRewarded="0">
                   Amy
              </answer>
         </answers>
