@@ -2,9 +2,9 @@
 #labels Phase-Implementation
 
 = List errands in location  =
-{{{
-/list?x=3.234&y=234.34 (range parameter is optional)
 
+/list?x=3.234&y=234.34 (range parameter is optional)
+{{{
 <errands>
 
     <errand id="123123" timeout="1234567890" user="olle" userReliability="1.0" price="50">
@@ -32,10 +32,10 @@
 }}}
 
 = View errand =
-{{{
+
 /viewErrand?id=123123
 
-
+{{{
     <errand id="123123" timeout="1234567890" user="olle" userReliability="1.0" price="50">
     // unix timestamp of timeout
 
@@ -54,7 +54,6 @@
         </description>
 
     </errand>
-
 }}}
 
 
@@ -63,19 +62,21 @@
 /perform?user=Gussoh?id=123123&latitude=12312323&longitude=123124&answer=Amy
 // location of user running errand, optional
 
-response from server:
 
+response from server:
+{{{
 <response>
   <status>OK</status> // OK || ERROR
   <message></message>
 </response>
+}}}
 
 = View errands created by user =
 
 /listErrands?user=gussoh
 
 Response:
-
+{{{
 <errands>
 
     <errand id="123123" timeout="1234567890" user="gussoh" price="50">
@@ -107,6 +108,7 @@ Response:
     <errand ...>...< /> ... 
 
 </errands>
+}}}
 
 = View errands performed by user =
 
@@ -114,6 +116,7 @@ Response:
 
 Response:
 
+{{{
 <errands>
 
     <errand id="123123" timeout="1234567890" user="olle" price="50">
@@ -145,13 +148,14 @@ Response:
     <errand ...>...< /> ... 
 
 </errands>
+}}}
 
 = Give reward =
 
 /reward?id=2145442
 
 response:
-
+{{{
 <response>
   <status>OK</status> // OK || ERROR
   <message></message>
@@ -162,14 +166,16 @@ response:
   <status>ERROR/status> // OK || ERROR
   <message>Already rewarded</message>
 </response>
+}}}
 
 = Get user info =
 /whois?user=gussoh
 
 response:
-
+{{{
 <user id="olle">
    <balance>340</balance>
    <disposablebalance>130</disposablebalance>
    <reliability>0.743</reliability>
 </user>
+}}}
