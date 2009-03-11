@@ -1,8 +1,8 @@
 #summary One-sentence summary of this page.
 #labels Phase-Implementation
 
-= List errands in location / view errand =
-/list?x=3.234&y=234.34&range=300 optional: &id=32432
+= List errands in location  =
+/list?x=3.234&y=234.34&range=300 
 
 <errands>
 
@@ -28,6 +28,33 @@
     <errand ...>...< /> ... 
 
 </errands>
+
+
+= View errand =
+/viewErrand?id=123123
+
+
+    <errand id="123123" timeout="1234567890" user="olle" userReliability="1.0" price="50">
+    // unix timestamp of timeout
+
+        <location lat="12312323" long="123124" range="300">
+
+        Hotel Ravishankar
+
+        </location>
+
+        // range in meters, text data is arbitrary user input
+
+        <description>
+
+        What is the name of the really cute waitress in the bar?
+
+        </description>
+
+    </errand>
+
+
+
 
 = Perform errand =
 
