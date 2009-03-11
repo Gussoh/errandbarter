@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package errandbarter;
 
 /**
@@ -21,5 +20,21 @@ public class User {
         this.balance = balance;
         this.disposableBalance = disposableBalance;
         this.reliability = reliability;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public int getDisposableBalance() {
+        return disposableBalance;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public double getReliability() {
+        return reliability;
     }
 }
