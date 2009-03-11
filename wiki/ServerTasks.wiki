@@ -2,6 +2,7 @@
 #labels Phase-Implementation
 
 = List errands in location  =
+{{{
 /list?x=3.234&y=234.34 (range parameter is optional)
 
 <errands>
@@ -28,9 +29,10 @@
     <errand ...>...< /> ... 
 
 </errands>
-
+}}}
 
 = View errand =
+{{{
 /viewErrand?id=123123
 
 
@@ -53,7 +55,7 @@
 
     </errand>
 
-
+}}}
 
 
 = Perform errand =
@@ -170,4 +172,4 @@ response:
    <balance>340</balance>
    <disposablebalance>130</disposablebalance>
    <reliability>0.743</reliability>
-<user>
+</user>
