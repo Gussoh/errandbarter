@@ -2,7 +2,7 @@
 #labels Phase-Implementation
 
 = List errands in location  =
-/list?x=3.234&y=234.34&range=300 
+/list?x=3.234&y=234.34 (range parameter is optional)
 
 <errands>
 
