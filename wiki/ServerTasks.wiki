@@ -29,9 +29,9 @@
 
 </errands>
 
-= Accept completed errands =
+= Perform errand =
 
-/run?user=Gussoh?id=123123&latitude=12312323&longitude=123124&answer=Amy
+/perform?user=Gussoh?id=123123&latitude=12312323&longitude=123124&answer=Amy
 // location of user running errand, optional
 
 response from server:
