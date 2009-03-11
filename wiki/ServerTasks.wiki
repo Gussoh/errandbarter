@@ -41,15 +41,15 @@ response from server:
   <message></message>
 </response>
 
-= View own errands =
+= View errands created by user =
 
-/listMyErrands?user=gussoh
+/listErrands?user=gussoh
 
 Response:
 
 <errands>
 
-    <errand id="123123" timeout="1234567890" user="olle" price="50">
+    <errand id="123123" timeout="1234567890" user="gussoh" price="50">
 
     // unix timestamp of timeout
 
@@ -79,6 +79,44 @@ Response:
 
 </errands>
 
+= View errands performed by user =
+
+/listErrandsPerformed?user=gussoh
+
+Response:
+
+<errands>
+
+    <errand id="123123" timeout="1234567890" user="olle" price="50">
+
+    // unix timestamp of timeout
+
+        <location latitude="123.12323" longitude="12.3124" range="300">
+
+        Hotel Ravishankar
+
+        </location>
+
+        // range in meters, text data is arbitrary user input
+
+        <description>
+
+        What is the name of the really cute waitress in the bar?
+
+        </description>
+
+        <answers>
+             <answer id="2145442" user="Gussoh" timestamp="xxx" latitude="x" longitude="y">
+                  Amy
+             </answer>
+        </answers>
+
+    </errand>
+
+    <errand ...>...< /> ... 
+
+</errands>
+
 = Give reward =
 
 /reward?id=2145442
@@ -95,3 +133,12 @@ response:
   <status>ERROR/status> // OK || ERROR
   <message>Already rewarded</message>
 </response>
+
+= Get user info =
+/whois?user=gussoh
+
+response:
+
+<users>
+  <userinfo user="olle" balance="340" disposablebalance="130" reliability="0.743" />
+<users>
