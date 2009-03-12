@@ -7,6 +7,7 @@ Server and Client
 Server is the webbapplication, JSP web application (template from oddoneout).
 Client is the MIDP-application.
 
+*Start with checking out the project.* svn checkout. see "source tab".
 
 =Server=
 _How to create the server project in Netbeans:_
