@@ -57,4 +57,8 @@ public class Location {
     public String getName() {
         return name;
     }
+
+    public String toString() {
+        return "Location: lat: " + latitude + ", long: " + longitude + ", range: " + range + ", name: " + name;
+    }
 }

@@ -56,4 +56,8 @@ public class Answer {
     public String getUser() {
         return user;
     }
+
+    public String toString() {
+        return "Answer id: " + id + ", user: " + user + ", answer: " + answer + ", time: " + timestamp + ", location: " + location + ", points rewarded: " + pointsRewarded;
+    }
 }

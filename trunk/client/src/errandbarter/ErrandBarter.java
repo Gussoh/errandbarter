@@ -5,8 +5,12 @@
 
 package errandbarter;
 
+import errandbarter.UI.MainForm;
+import errandbarter.UI.WelcomeForm;
+import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import javax.microedition.rms.RecordStoreException;
 
 /**
  *
@@ -17,15 +21,31 @@ public class ErrandBarter extends MIDlet {
     ServerConnection serverConnection;
 
     protected void startApp() throws MIDletStateChangeException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            serverConnection = new ServerConnection(this, RecordManager.getServerAddress(), RecordManager.getUserId());
+        } catch (RecordStoreException ex) {
+            ex.printStackTrace();
+            serverConnection = new ServerConnection(this, null, null);
+        }
+        WelcomeForm wf = new WelcomeForm(this);
+        if (serverConnection.getAddress() == null || serverConnection.getUserId() == null) {
+            Display.getDisplay(this).setCurrent(wf);
+        } else {
+            MainForm mf = new MainForm(this);
+            serverConnection.getUserInfo(mf, mf, wf);
+        }
     }
 
     protected void pauseApp() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     protected void destroyApp(boolean unconditional) throws MIDletStateChangeException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public ServerConnection getServerConnection() {
+        return serverConnection;
+    }
+
+    
 
 }
