@@ -4,14 +4,18 @@
  */
 package errandbarter;
 
+import errandbarter.UI.TransferDisplay;
 import java.io.IOException;
 import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import org.kxml2.io.KXmlParser;
 import org.kxml2.kdom.Document;
 import org.kxml2.kdom.Element;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -19,18 +23,76 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class ServerConnection {
 
-    public static String address = "http://localhost:8080/";
-    public String userId;
+    private String address;
+    private String userId;
+    private Display display;
+    private ErrandBarter eb;
 
-    public ServerConnection(String userId) {
+    public ServerConnection(ErrandBarter eb, String address, String userId) {
+        this.userId = userId;
+        this.address = address;
+        this.eb = eb;
+        display = Display.getDisplay(eb);
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public User getUserInfo() throws OperationException {
-        return getUserInfo(userId);
+    public String getAddress() {
+        return address;
     }
 
-    public User getUserInfo(String userId) throws OperationException {
+    public String getUserId() {
+        return userId;
+    }
+
+    public void giveReward(final int id, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+        new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
+
+            public void transfer() throws Exception {
+                String command = "reward";
+                String[] arguments = new String[]{"id=" + id};
+                fetch(command, arguments);
+                dataListener.onOK(command, arguments);
+            }
+        }.start();
+    }
+
+    public void performErrand(final int id, final String answer, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+        // /perform?user=Gussoh?id=123123&latitude=12312323&longitude=123124&answer=Amy // location of user running errand, optional
+        new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
+
+            public void transfer() throws Exception {
+                String command = "perform";
+                String[] arguments = new String[]{"id=" + id, "answer=" + answer}; // TODO: add location
+                fetch(command, arguments);
+                dataListener.onOK(command, arguments);
+            }
+        }.start();
+    }
+
+    public void getErrand(final int id, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+        new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
+
+            public void transfer() throws Exception {
+                String command = "viewErrand";
+                String[] arguments = new String[]{"id=" + id};
+                Document d = fetch(command, arguments);
+                dataListener.onViewErrand(createErrand(d.getRootElement()), command, arguments);
+            }
+        }.start();
+    }
+
+    public void getUserInfo(final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+        getUserInfo(userId, dataListener, nextDisplayable, onErrorScreen);
+    }
+
+    public void getUserInfo(final String userId, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
         /*
         <user id="olle">
         <balance>340</balance>
@@ -39,61 +101,127 @@ public class ServerConnection {
         </user>
          */
 
+        new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-        Document d = fetch("whois", new String[]{"user=" + userId});
-        int balance = 0;
-        int disposableBalance = 0;
-        double realiability = 0;
-        String id = null;
+            public void transfer() throws Exception {
+                String command = "whois";
+                String[] arguments = new String[]{"user=" + userId};
+                Document d = fetch(command, arguments);
+                
+                int balance = 0;
+                int disposableBalance = 0;
+                double realiability = 0;
+                String id = null;
 
-        Element root = d.getRootElement();
-        for (int i = 0; i < root.getAttributeCount(); i++) {
-            if (root.getAttributeName(i).equalsIgnoreCase("id")) {
-                id = root.getAttributeValue(i);
-            }
-        }
-
-        try {
-            for (int i = 0; i < root.getChildCount(); i++) {
-                Element element = root.getElement(i);
-                if (element.getName().equalsIgnoreCase("balance")) {
-                    balance = Integer.parseInt(element.getText(0));
-                } else if (element.getName().equalsIgnoreCase("disposablebalance")) {
-                    disposableBalance = Integer.parseInt(element.getText(0));
-                } else if (element.getName().equalsIgnoreCase("reliability")) {
-                    realiability = Double.parseDouble(element.getText(0));
+                Element root = d.getRootElement();
+                for (int i = 0; i < root.getAttributeCount(); i++) {
+                    if (root.getAttributeName(i).equalsIgnoreCase("id")) {
+                        id = root.getAttributeValue(i);
+                    }
                 }
 
+                try {
+                    for (int i = 0; i < root.getChildCount(); i++) {
+
+                        if (root.getChild(i) instanceof Element) {
+                            Element element = root.getElement(i);
+                            if (element.getName().equalsIgnoreCase("balance")) {
+                                balance = Integer.parseInt(element.getText(0));
+                            } else if (element.getName().equalsIgnoreCase("disposablebalance")) {
+                                disposableBalance = Integer.parseInt(element.getText(0));
+                            } else if (element.getName().equalsIgnoreCase("reliability")) {
+                                realiability = Double.parseDouble(element.getText(0));
+                            }
+                        }
+
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    throw new OperationException(e.getMessage());
+                }
+
+                if (id == null) {
+                    throw new OperationException("The whois did not return a user id.");
+                }
+
+                User user = new User(id, balance, disposableBalance, realiability);
+
+                /*if (id.equalsIgnoreCase(userId)) {
+                    eb.setMe(user); // convenience to always keep the object updated.
+                }*/
+                
+                dataListener.onUserInfo(user, command, arguments);
             }
-        } catch (NumberFormatException e) {
-            throw new OperationException(e.getMessage());
-        }
-
-        if (id == null) {
-            throw new OperationException("The whois did not return a user id.");
-        }
-
-        return new User(id, balance, disposableBalance, realiability);
+        }.start();
     }
 
-    public Vector listErrands() throws OperationException {
+    public void listErrandsPerformedBySelf(final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+        listErrandsPerformedBy(userId, dataListener, nextDisplayable, onErrorScreen);
+    }
 
+    public void listErrandsPerformedBy(final String user, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
 
-        Document d = fetch("list", new String[]{"latitude=3.4", "longitude=4.5"}); // TODO: insert real values
+        new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-        Element root = d.getRootElement();
+            public void transfer() throws Exception {
+                String command = "listErrandsPerformed";
+                String[] arguments = new String[]{"user=" + user};
+                Document d = fetch(command, arguments);
+                dataListener.onErrandsList(createErrands(d.getRootElement()), command, arguments);
+            }
+        }.start();
 
-        Vector errands = new Vector();
+    }
 
-        for (int i = 0; i < root.getChildCount(); i++) {
-            Element errandElement = root.getElement(i);
-            if (errandElement.getName().equalsIgnoreCase("errand")) {
-                errands.addElement(createErrand(root));
+    public void listOwnErrands(final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+        listErrandsBy(userId, dataListener, nextDisplayable, onErrorScreen);
+    }
+
+    public void listErrandsBy(final String user, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+        new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
+
+            public void transfer() throws Exception {
+                String command = "list";
+                String[] arguments = new String[]{"user=" + user};
+                Document d = fetch(command, arguments);
+
+                dataListener.onErrandsList(createErrands(d.getRootElement()), command, arguments);
+            }
+        }.start();
+    }
+
+    public void listErrands(final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+        new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
+
+            public void transfer() throws Exception {
+                String command = "list";
+                String[] arguments = new String[]{"latitude=3.4", "longitude=4.5"}; // TODO: insert real values
+                Document d = fetch(command, arguments);
+                
+                dataListener.onErrandsList(createErrands(d.getRootElement()), command, arguments);
+            }
+        }.start();
+    }
+
+    private Vector createErrands(Element errandsElement) throws OperationException {
+
+        if (errandsElement.getName().equalsIgnoreCase("errands")) {
+
+            Vector errands = new Vector();
+
+            for (int i = 0; i < errandsElement.getChildCount(); i++) {
+                if (errandsElement.getChild(i) instanceof Element) {
+                    Element errandElement = errandsElement.getElement(i);
+                    if (errandElement.getName().equalsIgnoreCase("errand")) {
+                        errands.addElement(createErrand(errandElement));
+                    }
+                }
             }
 
+            return errands;
+        } else {
+            throw new OperationException("Did not receive the expected list of errands");
         }
-
-        return errands;
     }
 
     private Vector createAnswers(Element root) throws OperationException {
@@ -115,33 +243,36 @@ public class ServerConnection {
         String answer = null;
 
         for (int i = 0; i < root.getChildCount(); i++) {
-            if (root.getElement(i).getName().equalsIgnoreCase("answer")) {
-                Element answerElement = root.getElement(i);
+            if (root.getChild(i) instanceof Element) {
+                if (root.getElement(i).getName().equalsIgnoreCase("answer")) {
+                    Element answerElement = root.getElement(i);
 
-                answer = answerElement.getText(0);
+                    answer = answerElement.getText(0);
 
-                try {
-                    for (int j = 0; j < answerElement.getAttributeCount(); j++) {
-                        if (answerElement.getAttributeName(j).equalsIgnoreCase("id")) {
-                            id = Integer.parseInt(answerElement.getAttributeValue(j));
-                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("user")) {
-                            user = answerElement.getAttributeValue(j);
-                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("timestamp")) {
-                            timestamp = Integer.parseInt(answerElement.getAttributeValue(j));
-                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("latitude")) {
-                            latitude = Double.parseDouble(answerElement.getAttributeValue(j));
-                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("longitude")) {
-                            longitude = Double.parseDouble(answerElement.getAttributeValue(j));
-                        } else if (answerElement.getAttributeName(j).equalsIgnoreCase("pointsRewarded")) {
-                            pointsRewarded = Integer.parseInt(answerElement.getAttributeValue(j));
+                    try {
+                        for (int j = 0; j < answerElement.getAttributeCount(); j++) {
+                            if (answerElement.getAttributeName(j).equalsIgnoreCase("id")) {
+                                id = Integer.parseInt(answerElement.getAttributeValue(j));
+                            } else if (answerElement.getAttributeName(j).equalsIgnoreCase("user")) {
+                                user = answerElement.getAttributeValue(j);
+                            } else if (answerElement.getAttributeName(j).equalsIgnoreCase("timestamp")) {
+                                timestamp = Integer.parseInt(answerElement.getAttributeValue(j));
+                            } else if (answerElement.getAttributeName(j).equalsIgnoreCase("latitude")) {
+                                latitude = Double.parseDouble(answerElement.getAttributeValue(j));
+                            } else if (answerElement.getAttributeName(j).equalsIgnoreCase("longitude")) {
+                                longitude = Double.parseDouble(answerElement.getAttributeValue(j));
+                            } else if (answerElement.getAttributeName(j).equalsIgnoreCase("pointsRewarded")) {
+                                pointsRewarded = Integer.parseInt(answerElement.getAttributeValue(j));
+                            }
                         }
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        throw new OperationException(e.getMessage());
                     }
-                } catch (NumberFormatException e) {
-                    throw new OperationException(e.getMessage());
-                }
 
-                Location location = new Location(latitude, longitude);
-                answers.addElement(new Answer(id, user, answer, timestamp, location, pointsRewarded));
+                    Location location = new Location(latitude, longitude);
+                    answers.addElement(new Answer(id, user, answer, timestamp, location, pointsRewarded));
+                }
             }
         }
 
@@ -186,17 +317,35 @@ public class ServerConnection {
         String description = null;
         Vector answers = null;
 
-        for (int i = 0; i < root.getChildCount(); i++) {
-            Element element = root.getElement(i);
-            if (element.getName().equalsIgnoreCase("location")) {
-                location = createLocation(element);
-            } else if (element.getName().equalsIgnoreCase("description")) {
-                description = element.getText(0);
-            } else if (element.getName().equalsIgnoreCase("answers")) {
-                answers = createAnswers(element);
+        for (int i = 0; i < root.getAttributeCount(); i++) {
+            if (root.getAttributeName(i).equalsIgnoreCase("id")) {
+                id = Integer.parseInt(root.getAttributeValue(i));
+            } else if (root.getAttributeName(i).equalsIgnoreCase("user")) {
+                user = root.getAttributeValue(i);
+            } else if (root.getAttributeName(i).equalsIgnoreCase("price")) {
+                price = Integer.parseInt(root.getAttributeValue(i));
+            } else if (root.getAttributeName(i).equalsIgnoreCase("timeout")) {
+                timeout = Integer.parseInt(root.getAttributeValue(i));
             }
         }
 
+        for (int i = 0; i < root.getChildCount(); i++) {
+            if (root.getChild(i) instanceof Element) {
+                Element element = root.getElement(i);
+
+                if (element.getName().equalsIgnoreCase("location")) {
+                    location = createLocation(element);
+                } else if (element.getName().equalsIgnoreCase("description")) {
+                    description = element.getText(0);
+                } else if (element.getName().equalsIgnoreCase("answers")) {
+                    answers = createAnswers(element);
+                }
+            }
+        }
+
+        if (user == null || description == null || location == null) {
+            throw new OperationException("Errand has unknown user, description or location!");
+        }
         return new Errand(id, user, location, description, timeout, price, answers);
     }
 
@@ -224,6 +373,7 @@ public class ServerConnection {
                 }
             }
         } catch (NumberFormatException e) {
+            e.printStackTrace();
             throw new OperationException(e.getMessage());
         }
 
@@ -236,10 +386,14 @@ public class ServerConnection {
 
     }
 
-    private Document fetch(String path, String[] variables) throws OperationException {
-        try {
-            StringBuffer sb = new StringBuffer(path);
+    private Document fetch(String path, String[] variables) throws Exception {
 
+        Thread.sleep(1500); // TODO: remove
+        
+        StringBuffer sb = new StringBuffer(address);
+        sb.append(path);
+
+        if (variables != null) {
             for (int i = 0; i < variables.length; i++) {
                 if (i == 0) {
                     sb.append("?");
@@ -249,15 +403,18 @@ public class ServerConnection {
                 String variable = variables[i];
                 sb.append(variable);
             }
+        }
 
-            HttpConnection c = (HttpConnection) Connector.open(sb.toString());
+        //System.out.println("URL: " + sb.toString());
+        HttpConnection c = (HttpConnection) Connector.open(sb.toString());
 
-            KXmlParser parser = new KXmlParser();
-            parser.setInput(c.openInputStream(), "UTF-8");
-            Document d = new Document();
-            d.parse(parser);
-            c.close();
+        KXmlParser parser = new KXmlParser();
+        parser.setInput(c.openInputStream(), "UTF-8");
+        Document d = new Document();
+        d.parse(parser);
+        c.close();
 
+        if (d.getChildCount() > 0) {
             Element root = d.getRootElement();
 
             boolean error = false;
@@ -266,17 +423,18 @@ public class ServerConnection {
 
             if (root.getName().equalsIgnoreCase("response")) {
                 for (int i = 0; i < d.getChildCount(); i++) {
-                    Element element = d.getElement(i);
-                    if (element.getName().equalsIgnoreCase("status")) {
-                        statusFound = true;
-                        String response = element.getText(0);
-                        if (!response.equalsIgnoreCase("ok")) {
-                            error = true;
+                    if (root.getChild(i) instanceof Element) {
+                        Element element = d.getElement(i);
+                        if (element.getName().equalsIgnoreCase("status")) {
+                            statusFound = true;
+                            String response = element.getText(0);
+                            if (!response.equalsIgnoreCase("ok")) {
+                                error = true;
+                            }
+                        } else if (element.getName().equalsIgnoreCase("message")) {
+                            message = element.getText(0);
                         }
-                    } else if (element.getName().equalsIgnoreCase("message")) {
-                        message = element.getText(0);
                     }
-
                 }
 
                 if (error) {
@@ -285,13 +443,48 @@ public class ServerConnection {
                     throw new OperationException("Status element not found in response message.");
                 }
             }
+        } else {
+            throw new OperationException("Server response contained no data.");
+        }
+        return d;
+    }
 
-            return d;
+    private abstract class TransferOperation extends Thread {
 
-        } catch (IOException e) {
-            throw new OperationException(e.getMessage());
-        } catch (XmlPullParserException e) {
-            throw new OperationException(e.getMessage());
+        private Displayable nextDisplayable,  onErrorScreen;
+        private DataListener dataListener;
+
+        public TransferOperation(final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
+            this.nextDisplayable = nextDisplayable;
+            this.onErrorScreen = onErrorScreen;
+            this.dataListener = dataListener;
+        }
+
+        public abstract void transfer() throws Exception;
+
+        public void run() {
+            display.setCurrent(new TransferDisplay(display));
+            try {
+                transfer();
+                display.setCurrent(nextDisplayable);
+            } catch (Exception e) {
+                e.printStackTrace();
+                dataListener.onError(e);
+                if (onErrorScreen != null) { // should the datalistener handle the error?
+                    Alert alert = new Alert("Communication error", e.getMessage(), null, AlertType.ERROR);
+                    alert.setTimeout(Alert.FOREVER);
+                    display.setCurrent(alert, onErrorScreen);
+                } else {
+                    display.setCurrent(nextDisplayable);
+                    display.setCurrent(nextDisplayable); // Some strange bug forced me to do this. On second error it didn't go "back" to nextDisplayable
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                    display.setCurrent(nextDisplayable);
+                }
+            }
         }
     }
 }

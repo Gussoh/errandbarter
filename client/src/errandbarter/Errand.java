@@ -94,4 +94,8 @@ public class Errand {
     public String getUser() {
         return user;
     }
+
+    public String toString() {
+        return "Errand id: " + id + ", user: " + user + ", location: " + location + ", description: " + description + ", timeout: " + timeout + ", price: " + price + ", answers: " + answers;
+    }
 }

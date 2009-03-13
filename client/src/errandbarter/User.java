@@ -37,4 +37,8 @@ public class User {
     public double getReliability() {
         return reliability;
     }
+
+    public String toString() {
+        return "User " + id + ", balance: " + balance + " disposable: " + disposableBalance + ", reliability: " + reliability;
+    }
 }
