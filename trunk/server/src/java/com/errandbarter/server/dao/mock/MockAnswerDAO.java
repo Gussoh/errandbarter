@@ -7,8 +7,8 @@ package com.errandbarter.server.dao.mock;
 import com.errandbarter.server.dao.AnswerDAO;
 import com.errandbarter.server.entity.Answer;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class MockAnswerDAO implements AnswerDAO {
 
-    private Hashtable<Integer, Answer> answers;
+    private Map<Integer, Answer> answers;
 
-    public MockAnswerDAO(Hashtable<Integer, Answer> answers) {
+    public MockAnswerDAO(Map<Integer, Answer> answers) {
         this.answers = answers;
     }
 
