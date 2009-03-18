@@ -20,9 +20,9 @@ import java.util.List;
  */
 public interface XMLWriter {
     
-    public String getXml(List<Errand> Errands);
-    public String getXml(Errand errand);
-    public String getXml(User user);
-    public String getXml(Response response);
+    public String getXML(List<Errand> Errands);
+    public String getXML(Errand errand);
+    public String getXML(User user);
+    public String getXML(Response response);
 
 }
