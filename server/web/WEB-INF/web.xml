@@ -6,6 +6,14 @@
         <jsp-file>/WEB-INF/jspf/error.jspf</jsp-file>
     </servlet>
     
+    <servlet>
+        <servlet-name>NewServlet</servlet-name>
+        <servlet-class>com.errandbarter.server.controller.NewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NewServlet</servlet-name>
+        <url-pattern>/NewServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
