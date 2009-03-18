@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class MockDAOFactory implements DAOFactory {
     
-    private final static MockDAOFactory INSTANCE = new MockDAOFactory();
+    private final static MockDAOFactory singleton = new MockDAOFactory();
     
     private ErrandDAO errandDAO;
     private UserDAO userDAO;
