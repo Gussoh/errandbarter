@@ -7,17 +7,33 @@
     </servlet>
     
     <servlet>
-        <servlet-name>NewServlet</servlet-name>
-        <servlet-class>com.errandbarter.server.controller.NewServlet</servlet-class>
+        <servlet-name>ViewErrandServlet</servlet-name>
+        <servlet-class>com.errandbarter.server.controller.ViewErrandServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ListErrandsServlet</servlet-name>
+        <servlet-class>com.errandbarter.server.controller.ListErrandsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserInfoServlet</servlet-name>
+        <servlet-class>com.errandbarter.server.controller.UserInfoServlet</servlet-class>
+    </servlet>
+   
     <servlet-mapping>
-        <servlet-name>NewServlet</servlet-name>
-        <url-pattern>/NewServlet</url-pattern>
+        <servlet-name>ViewErrandServlet</servlet-name>
+        <url-pattern>/viewErrand</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListErrandsServlet</servlet-name>
+        <url-pattern>/list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserInfoServlet</servlet-name>
+        <url-pattern>/whois</url-pattern>
+    </servlet-mapping>
+    
     <session-config>
-        <session-timeout>
-            30
-        </session-timeout>
+        <session-timeout>30</session-timeout>
     </session-config>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
