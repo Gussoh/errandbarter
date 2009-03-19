@@ -309,7 +309,7 @@ public class ServerConnection {
 
          */
         int id = 0;
-        int timeout = 0;
+        long timeout = 0;
         String user = null;
         int price = 0;
         Location location = null;
@@ -324,7 +324,7 @@ public class ServerConnection {
             } else if (root.getAttributeName(i).equalsIgnoreCase("price")) {
                 price = Integer.parseInt(root.getAttributeValue(i));
             } else if (root.getAttributeName(i).equalsIgnoreCase("timeout")) {
-                timeout = Integer.parseInt(root.getAttributeValue(i));
+                timeout = Long.parseLong(root.getAttributeValue(i));
             }
         }
 

@@ -44,11 +44,11 @@ public class Errand {
     private String user;
     private Location location;
     private String description;
-    private int timeout;
+    private long timeout;
     private int price;
     private Vector answers;
 
-    public Errand(int id, String user, Location location, String description, int timeout, int price, Vector answers) {
+    public Errand(int id, String user, Location location, String description, long timeout, int price, Vector answers) {
         this.id = id;
         this.user = user;
         this.location = location;
@@ -103,7 +103,7 @@ public class Errand {
         return price;
     }
 
-    public int getTimeout() {
+    public long getTimeout() {
         return timeout;
     }
 

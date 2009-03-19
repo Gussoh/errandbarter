@@ -29,7 +29,6 @@ public class AnswerForm extends Form implements CommandListener, ItemCommandList
     private ErrandBarter eb;
     private Command backCommand = new Command("Back", Command.BACK, 0);
     private Command openCommand = new Command("Open", Command.ITEM, 0);
-
     private Command rewardCommand = new Command("Give reward", Command.ITEM, 0);
     private final Answer answer;
     private final Displayable previous;
@@ -75,16 +74,17 @@ public class AnswerForm extends Form implements CommandListener, ItemCommandList
         }
         append(rewardedItem);
 
-        
+
     }
 
     public void commandAction(Command c, Displayable d) {
+        if (c == backCommand) {
+            Display.getDisplay(eb).setCurrent(previous);
+        }
     }
 
     public void commandAction(Command c, Item item) {
-        if (c == backCommand) {
-            Display.getDisplay(eb).setCurrent(previous);
-        } else if (item == userItem) {
+        if (item == userItem) {
             UserInfoForm uif = new UserInfoForm(eb, this);
             eb.getServerConnection().getUserInfo(uif, uif, this);
         } else if (item == rewardedItem) {

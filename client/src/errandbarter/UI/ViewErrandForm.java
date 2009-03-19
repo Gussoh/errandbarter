@@ -61,7 +61,7 @@ public class ViewErrandForm extends Form implements DataListener, CommandListene
         this.errand = errand;
         setTitle("Errand  $" + errand.getPrice());
         ownerItem.setText(errand.getUser());
-        descriptionItem.setText(errand.getDescription());
+        descriptionItem.setText(errand.getDescription().trim());
 
         answerItems = new StringItem[errand.getAnswers().size()];
         answers = new Answer[errand.getAnswers().size()];
@@ -101,7 +101,8 @@ public class ViewErrandForm extends Form implements DataListener, CommandListene
             UserInfoForm uif = new UserInfoForm(eb, this);
             eb.getServerConnection().getUserInfo(errand.getUser(), uif, uif, this);
         } else if (item == updateItem) {
-            eb.getServerConnection().getErrand(errand.getId(), this, this, this);
+            ViewErrandForm vef = new ViewErrandForm(eb, previous);
+            eb.getServerConnection().getErrand(errand.getId(), vef, vef, this);
         } else if (c == openCommand) {
             for (int i = 0; i < answerItems.length; i++) {
                 if(item == answerItems[i]) {
