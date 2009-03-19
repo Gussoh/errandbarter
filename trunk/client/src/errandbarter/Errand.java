@@ -67,6 +67,22 @@ public class Errand {
         this.price = price;
     }
 
+    /**
+     * Calculates if a errand has been rewarded by looking at the answers
+     * @return true if it is rewarded
+     */
+    public boolean isRewarded() {
+        boolean rewarded = false;
+        for (int i = 0; i < answers.size(); i++) {
+            Answer answer = (Answer) answers.elementAt(i);
+            if (answer.getPointsRewarded() > 0) {
+                rewarded = true;
+                break;
+            }
+        }
+        return rewarded;
+    }
+
     public Vector getAnswers() {
         return answers;
     }

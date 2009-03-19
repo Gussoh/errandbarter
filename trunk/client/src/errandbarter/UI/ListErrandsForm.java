@@ -46,10 +46,11 @@ public class ListErrandsForm extends Form implements DataListener, CommandListen
 
         for (int i = 0; i < errands.size(); i++) {
             Errand errand = (Errand) errands.elementAt(i);
-            errandsItems[i] = new StringItem("$" + errand.getPrice(), errand.getDescription());
+            errandsItems[i] = new StringItem("$" + errand.getPrice(), errand.getDescription().replace('\n', ' ').trim());
             errandsItems[i].setDefaultCommand(openCommand);
             errandsItems[i].setItemCommandListener(this);
             errandsIds[i] = errand.getId();
+            append(errandsItems[i]);
         }
     }
 
