@@ -13,6 +13,7 @@ import errandbarter.ServerConnection;
 import errandbarter.User;
 import java.util.Vector;
 import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -50,7 +51,7 @@ public class WelcomeForm extends Form implements CommandListener, DataListener {
         mf = new MainForm(eb);
         eb.getServerConnection().setAddress(serverAddress.getString());
         eb.getServerConnection().setUserId(userId.getString());
-        eb.getServerConnection().getUserInfo(this, mf, null);
+        eb.getServerConnection().getUserInfo(this, mf, null); // manual error handeling
     }
 
     public void onError(Exception e) {
@@ -71,17 +72,13 @@ public class WelcomeForm extends Form implements CommandListener, DataListener {
     }
 
     public void onUserInfo(User user, String command, String[] arguments) {
-        if (!user.getId().equalsIgnoreCase(userId.getString())) { // got another user than requested.
-            Display.getDisplay(eb).setCurrent(new Alert("SERVER ERROR!\nGot wrong user id from server!"));
-        } else {
-            try {
-                RecordManager.setServerAddressAndUserId(serverAddress.getString(), userId.getString());
-            } catch (RecordStoreException ex) {
-                ex.printStackTrace();
-            }
-
-            mf.onUserInfo(user, command, arguments);
+        try {
+            RecordManager.setServerAddressAndUserId(serverAddress.getString(), userId.getString());
+        } catch (RecordStoreException ex) {
+            ex.printStackTrace();
         }
+
+        mf.onUserInfo(user, command, arguments);
     }
 
     public void onOK(String command, String[] arguments) {

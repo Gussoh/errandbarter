@@ -5,7 +5,6 @@
 package errandbarter;
 
 import errandbarter.UI.TransferDisplay;
-import java.io.IOException;
 import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -344,7 +343,7 @@ public class ServerConnection {
         }
 
         if (user == null || description == null || location == null) {
-            throw new OperationException("Errand has unknown user, description or location!");
+            throw new OperationException("Could not fetch errand. (unknown user, description or location)");
         }
         return new Errand(id, user, location, description, timeout, price, answers);
     }
