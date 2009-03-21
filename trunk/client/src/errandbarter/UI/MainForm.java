@@ -97,7 +97,7 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
         } else if (c == openItemCommand) {
             for (int i = 0; i < locationErrands.length; i++) {
                 if (item == locationErrands[i]) {
-                    ViewErrandForm vef = new ViewErrandForm(eb, this);
+                    ErrandForm vef = new ErrandForm(eb, this);
                     eb.getServerConnection().getErrand(locationErrandsIds[i], vef, vef, this);
                 }
             }

@@ -23,7 +23,7 @@ import javax.microedition.lcdui.StringItem;
  *
  * @author Gussoh
  */
-public class ViewErrandForm extends Form implements DataListener, CommandListener, ItemCommandListener {
+public class ErrandForm extends Form implements DataListener, CommandListener, ItemCommandListener {
 
     private ErrandBarter eb;
     private Command backCommand = new Command("Back", Command.BACK, 0);
@@ -31,7 +31,8 @@ public class ViewErrandForm extends Form implements DataListener, CommandListene
 
     private StringItem ownerItem = new StringItem("Owner", "?");
     private StringItem descriptionItem = new StringItem("Description", "?");
-    private StringItem updateItem = new StringItem("Update", "Fetch update");
+    private StringItem updateItem = new StringItem("Update", "update errand");
+    private StringItem answerItem = new StringItem("Answer", "Write answer");
 
     private Errand errand;
 
@@ -40,7 +41,7 @@ public class ViewErrandForm extends Form implements DataListener, CommandListene
 
     private Displayable previous;
 
-    public ViewErrandForm(ErrandBarter eb, Displayable previous) {
+    public ErrandForm(ErrandBarter eb, Displayable previous) {
         super("View Errand");
         this.eb = eb;
         this.previous = previous;
@@ -78,6 +79,13 @@ public class ViewErrandForm extends Form implements DataListener, CommandListene
 
         updateItem.setDefaultCommand(openCommand);
         updateItem.setItemCommandListener(this);
+
+        if (!errand.getUser().equalsIgnoreCase(eb.getServerConnection().getUserId())) {
+            answerItem.setDefaultCommand(openCommand);
+            answerItem.setItemCommandListener(this);
+            append(answerItem);
+        }
+
         append(updateItem);
     }
 
@@ -97,16 +105,19 @@ public class ViewErrandForm extends Form implements DataListener, CommandListene
     }
 
     public void commandAction(Command c, Item item) {
-        if (item == ownerItem) {
+        if (item == answerItem) {
+            WriteAnswerForm waf = new WriteAnswerForm(eb, this, errand);
+            Display.getDisplay(eb).setCurrent(waf);
+        } else if (item == ownerItem) {
             UserInfoForm uif = new UserInfoForm(eb, this);
             eb.getServerConnection().getUserInfo(errand.getUser(), uif, uif, this);
         } else if (item == updateItem) {
-            ViewErrandForm vef = new ViewErrandForm(eb, previous);
+            ErrandForm vef = new ErrandForm(eb, previous);
             eb.getServerConnection().getErrand(errand.getId(), vef, vef, this);
         } else if (c == openCommand) {
             for (int i = 0; i < answerItems.length; i++) {
                 if(item == answerItems[i]) {
-                    AnswerForm af = new AnswerForm(eb, this, answers[i], errand.isRewarded());
+                    AnswerForm af = new AnswerForm(eb, this, answers[i], errand);
                     Display.getDisplay(eb).setCurrent(af);
                 }
             }

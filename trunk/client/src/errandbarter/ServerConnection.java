@@ -106,7 +106,7 @@ public class ServerConnection {
                 String command = "whois";
                 String[] arguments = new String[]{"user=" + userId};
                 Document d = fetch(command, arguments);
-                
+
                 int balance = 0;
                 int disposableBalance = 0;
                 double realiability = 0;
@@ -146,9 +146,9 @@ public class ServerConnection {
                 User user = new User(id, balance, disposableBalance, realiability);
 
                 /*if (id.equalsIgnoreCase(userId)) {
-                    eb.setMe(user); // convenience to always keep the object updated.
+                eb.setMe(user); // convenience to always keep the object updated.
                 }*/
-                
+
                 dataListener.onUserInfo(user, command, arguments);
             }
         }.start();
@@ -196,7 +196,7 @@ public class ServerConnection {
                 String command = "list";
                 String[] arguments = new String[]{"latitude=3.4", "longitude=4.5"}; // TODO: insert real values
                 Document d = fetch(command, arguments);
-                
+
                 dataListener.onErrandsList(createErrands(d.getRootElement()), command, arguments);
             }
         }.start();
@@ -388,7 +388,7 @@ public class ServerConnection {
     private Document fetch(String path, String[] variables) throws Exception {
 
         Thread.sleep(1500); // TODO: remove
-        
+
         StringBuffer sb = new StringBuffer(address);
         sb.append(path);
 
@@ -465,7 +465,9 @@ public class ServerConnection {
             display.setCurrent(new TransferDisplay(display));
             try {
                 transfer();
-                display.setCurrent(nextDisplayable);
+                if (nextDisplayable != null) { // perhaps the datahandler wants to handle this
+                    display.setCurrent(nextDisplayable);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 dataListener.onError(e);
@@ -473,7 +475,7 @@ public class ServerConnection {
                     Alert alert = new Alert("Communication error", e.getMessage(), null, AlertType.ERROR);
                     alert.setTimeout(Alert.FOREVER);
                     display.setCurrent(alert, onErrorScreen);
-                } else {
+                } else if(nextDisplayable != null) { // perhaps the datahandler wants to handle this
                     display.setCurrent(nextDisplayable);
                     display.setCurrent(nextDisplayable); // Some strange bug forced me to do this. On second error it didn't go "back" to nextDisplayable
                     try {

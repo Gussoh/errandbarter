@@ -38,13 +38,15 @@ public class AnswerForm extends Form implements CommandListener, ItemCommandList
     private StringItem timeItem;
     private StringItem rewardedItem;
     private final boolean questionRewarded;
+    private Errand errand;
 
-    public AnswerForm(ErrandBarter eb, Displayable previous, Answer answer, boolean questionRewarded) {
+    public AnswerForm(ErrandBarter eb, Displayable previous, Answer answer, Errand errand) {
         super("Answer");
         this.eb = eb;
         this.answer = answer;
         this.previous = previous;
-        this.questionRewarded = questionRewarded;
+        this.questionRewarded = errand.isRewarded();
+        this.errand = errand;
 
         addCommand(backCommand);
         setCommandListener(this);
@@ -67,7 +69,7 @@ public class AnswerForm extends Form implements CommandListener, ItemCommandList
             rewardedItem = new StringItem("Rewarded", "Yes");
         } else {
             rewardedItem = new StringItem("Rewarded", "No");
-            if (!questionRewarded) {
+            if (!questionRewarded && errand.getUser().equalsIgnoreCase(eb.getServerConnection().getUserId())) {
                 rewardedItem.setDefaultCommand(rewardCommand);
                 rewardedItem.setItemCommandListener(this);
             }
