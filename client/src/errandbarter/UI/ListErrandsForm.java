@@ -76,7 +76,7 @@ public class ListErrandsForm extends Form implements DataListener, CommandListen
         if (c == openCommand) {
             for (int i = 0; i < errandsItems.length; i++) {
                 if (item == errandsItems[i]) {
-                    errandbarter.UI.ViewErrandForm vef = new ViewErrandForm(eb, this);
+                    errandbarter.UI.ErrandForm vef = new ErrandForm(eb, this);
                     eb.getServerConnection().getErrand(errandsIds[i], vef, vef, this);
                 }
             }
