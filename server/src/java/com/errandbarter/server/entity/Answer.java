@@ -13,7 +13,8 @@ import java.util.Date;
  */
 public class Answer implements Serializable {
 
-    private Integer id;
+  
+	private Integer id;
     private int errandID;
     private String userID;
     private Date timestamp;
@@ -21,7 +22,23 @@ public class Answer implements Serializable {
     private double latitude;
     private int pointsRewarded;
     private String information;
-   
+    
+    public Answer() {}
+    
+    public Answer(Integer id, int errandID, String userID, Date timestamp,
+			double longitude, double latitude, int pointsRewarded,
+			String information) {
+	
+		this.id = id;
+		this.errandID = errandID;
+		this.userID = userID;
+		this.timestamp = timestamp;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.pointsRewarded = pointsRewarded;
+		this.information = information;
+	}
+
 
 	public Integer getId() {
         return id;
