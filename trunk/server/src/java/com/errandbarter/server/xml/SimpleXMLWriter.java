@@ -10,7 +10,6 @@
 package com.errandbarter.server.xml;
 
 import com.errandbarter.server.controller.Response;
-import com.errandbarter.server.dao.mock.MockDAOFactory;
 import com.errandbarter.server.entity.Answer;
 import com.errandbarter.server.entity.Errand;
 import com.errandbarter.server.entity.User;
@@ -30,39 +29,11 @@ public class SimpleXMLWriter implements XMLWriter {
         return singleton;
     }
     
-    public String getXML(List<Errand> Errands) {
+    public String getXML(List<Errand> errands) {
         String errandsListXML = "<errands>";
 
-        for(int i = 0; i < Errands.size(); i++)
-        {
-            errandsListXML += "<errand id=\"" + Errands.get(i).getId() 
-                    + "\" timeout=\"" + Errands.get(i).getTimeout()
-                    + "\" user=\"" + Errands.get(i).getUser()
-                    + "\" userReliability=\"" + Errands.get(i).getUserReliability()
-                    + "\" price=\"" + Errands.get(i).getPrice()
-                    + "\"><location lat=\"" + Errands.get(i).getLocationLatitude()
-                    + "\" long=\"" + Errands.get(i).getLocationLongtitude()
-                    + "\" range=\"" + Errands.get(i).getLocationRange()
-                    + "\" distance=\"" + Errands.get(i).getDistance()
-                    + "\">" + Errands.get(i).getLocation()
-                    + "</location><description>" + Errands.get(i).getDescription()
-                    + "</description><answers>";
-
-                    // get list of answers for the errand
-                    List<Answer> Answers = Errands.get(i).getAnswers();
-
-                    for(int j=0; j < Answers.size(); j++)
-                    {
-                        errandsListXML += "<answer id=\"" + Answers.get(i).getId()
-                                + "\" user=\"" + Answers.get(i).getUserID()
-                                + "\" timestamp=\"" + Answers.get(i).getTimestamp().toString()
-                                + "\" lat=\"" + Answers.get(i).getLatitude()
-                                + "\" long=\"" + Answers.get(i).getLongitude()
-                                + "\" pointsRewards=\"" + Answers.get(i).getPointsRewarded()
-                                + "\">" + Answers.get(i).getInformation()
-                                + "</answer>";
-                    }
-                    errandsListXML += "</answers></errand>";
+        for(Errand errand : errands) {
+        	errandsListXML += getXML(errand);
         }
 
        errandsListXML += "</errands>";
@@ -71,7 +42,8 @@ public class SimpleXMLWriter implements XMLWriter {
     }
     
     public String getXML(Errand errand) {
-        String errandXML = "<errand id=\"" + errand.getId()
+        String errandXML = new String();
+        /* "<errand id=\"" + errand.getId()
                 + "\" timeout=\"" + errand.getTimeout() + "\" user=\"" + errand.getUser()
                 + "\" userReliability=\"" + errand.getUserReliability()
                 + "\" price=\"" + errand.getPrice()
@@ -82,6 +54,32 @@ public class SimpleXMLWriter implements XMLWriter {
                 + "\">" + errand.getLocation()
                 + "</location><description>" + errand.getDescription()
                 + "</description></errand>";
+                */
+        errandXML += "<errand id=\"" + errand.getId() 
+        + "\" timeout=\"" + errand.getTimeout()
+        + "\" user=\"" + errand.getUser()
+        + "\" userReliability=\"" + errand.getUserReliability()
+        + "\" price=\"" + errand.getPrice()
+        + "\"><location lat=\"" + errand.getLocationLatitude()
+        + "\" long=\"" + errand.getLocationLongtitude()
+        + "\" range=\"" + errand.getLocationRange()
+        + "\" distance=\"" + errand.getDistance()
+        + "\">" + errand.getLocation()
+        + "</location><description>" + errand.getDescription()
+        + "</description><answers>";
+
+        // get list of answers for the errand
+        for(Answer answer: errand.getAnswers())                    {
+        	errandXML += "<answer id=\"" + answer.getId()
+                    + "\" user=\"" + answer.getUserID()
+                    + "\" timestamp=\"" + answer.getTimestamp().toString()
+                    + "\" lat=\"" + answer.getLatitude()
+                    + "\" long=\"" + answer.getLongitude()
+                    + "\" pointsRewards=\"" + answer.getPointsRewarded()
+                    + "\">" + answer.getInformation()
+                    + "</answer>";
+        }
+        errandXML += "</answers></errand>";
         return errandXML;
     }
     
