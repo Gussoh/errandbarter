@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class Errand implements Serializable {
 
-    private Integer id;
+	private Integer id;
     private long timeout;
     private String user;
     private double userReliability;
@@ -28,6 +28,23 @@ public class Errand implements Serializable {
     private List<Answer> answers;
     
     public Errand() {}
+    
+    public Errand(Integer id, long timeout, String user,
+			double userReliability, int price, String location,
+			double locationLatitude, double locationLongtitude,
+			double distance, int locationRange, String description) {
+		this.id = id;
+		this.timeout = timeout;
+		this.user = user;
+		this.userReliability = userReliability;
+		this.price = price;
+		this.location = location;
+		this.locationLatitude = locationLatitude;
+		this.locationLongtitude = locationLongtitude;
+		this.distance = distance;
+		this.locationRange = locationRange;
+		this.description = description;
+	}
     
     public Integer getId() {
         return id;

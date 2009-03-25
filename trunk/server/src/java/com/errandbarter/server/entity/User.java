@@ -12,12 +12,22 @@ import java.io.Serializable;
  * @author Zach
  */
 public class User implements Serializable {
-    
-    private String id;
+     
+	private String id;
     private int balance;
     private int disposableBalance;
     private double reliability;
 
+    public User() { }
+    
+    public User(String id, int balance, int disposableBalance,
+			double reliability) {
+		this.id = id;
+		this.balance = balance;
+		this.disposableBalance = disposableBalance;
+		this.reliability = reliability;
+	}
+    
     public String getId() {
         return id;
     }

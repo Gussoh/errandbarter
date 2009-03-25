@@ -36,7 +36,7 @@ public class ListErrandsCreatedByUserServlet extends HttpServlet {
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-	 * methods. /listErrandsPerformed?user=gussoh 
+	 * methods. /listErrands?user=gussoh 
 	 * 
 	 * @param request
 	 *            servlet request

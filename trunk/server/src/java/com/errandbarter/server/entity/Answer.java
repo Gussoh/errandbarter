@@ -20,8 +20,10 @@ public class Answer implements Serializable {
     private double longitude;
     private double latitude;
     private int pointsRewarded;
+    private String information;
+   
 
-    public Integer getId() {
+	public Integer getId() {
         return id;
     }
 
@@ -75,4 +77,13 @@ public class Answer implements Serializable {
     public void setPointsRewarded(int pointsRewarded) {
         this.pointsRewarded = pointsRewarded;
     }
+    
+    
+    public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
+	}
 }
