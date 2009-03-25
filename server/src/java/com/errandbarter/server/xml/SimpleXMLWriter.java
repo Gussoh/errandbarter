@@ -41,6 +41,7 @@ public class SimpleXMLWriter implements XMLWriter {
                 + "\"><location lat=\"" + errand.getLocationLatitude()
                 + "\" long=\"" + errand.getLocationLongtitude()
                 + "\" range=\"" + errand.getLocationRange()
+                + "\" distance=\"" + errand.getDistance()
                 + "\">" + errand.getLocation()
                 + "</location><description>" + errand.getDescription()
                 + "</description></errand>";

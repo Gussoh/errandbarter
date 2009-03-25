@@ -6,6 +6,7 @@
 package com.errandbarter.server.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -21,9 +22,11 @@ public class Errand implements Serializable {
     private String location;
     private double locationLatitude;
     private double locationLongtitude;
+    private double distance;
     private int locationRange;
     private String description;
-
+    private List<Answer> answers;
+    
     public Errand() {}
     
     public Integer getId() {
@@ -104,6 +107,22 @@ public class Errand implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }    
+    }
+
+    public void setAnswers(List<Answer> answers) {
+		this.answers = answers;
+	}
+
+    public List<Answer> getAnswers() {
+		return answers;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+	public double getDistance() {
+		return distance;
+	}    
     
 }
