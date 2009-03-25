@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package errandbarter.UI;
 
 import errandbarter.DataListener;
@@ -25,18 +24,14 @@ import javax.microedition.lcdui.StringItem;
  */
 public class UserInfoForm extends Form implements DataListener, CommandListener, ItemCommandListener {
 
-    private StringItem username = new StringItem("Username", "?");
-    private StringItem balance = new StringItem("Balance", "?");
-    private StringItem disposable = new StringItem("Disposable Balance", "?");
-
-    private StringItem listAnsweredErrands = new StringItem("List errands", "Answered by user");
-    private StringItem listCreatedErrands = new StringItem("List errands", "Created by user");
-
+    private IconItem username;
+    private IconItem balance;
+    private IconItem disposable;
+    private IconItem listAnsweredErrands;
+    private IconItem listCreatedErrands;
     private ErrandBarter eb;
     private Displayable previous;
-
     private User user;
-
     private Command backCommand = new Command("Back", Command.BACK, 1);
     private Command openCommand = new Command("Open", Command.ITEM, 0);
 
@@ -44,6 +39,14 @@ public class UserInfoForm extends Form implements DataListener, CommandListener,
         super("User info");
         this.previous = previous;
         this.eb = eb;
+
+        username = new IconItem(eb, Icons.getInstance().user, "Username", "?");
+        balance = new IconItem(eb, Icons.getInstance().balance, "Balance", "?");
+        disposable = new IconItem(eb, Icons.getInstance().balance_disposable, "Disposable Balance", "?");
+
+        listAnsweredErrands = new IconItem(eb, Icons.getInstance().errand_answered, "List errands answered by user", "");
+        listCreatedErrands = new IconItem(eb, Icons.getInstance().errand_own, "List errands created by user", "");
+        
         append(username);
         append(balance);
         append(disposable);
@@ -58,7 +61,6 @@ public class UserInfoForm extends Form implements DataListener, CommandListener,
         addCommand(backCommand);
         setCommandListener(this);
     }
-
 
     public void commandAction(Command c, Displayable d) {
         if (c == backCommand) {

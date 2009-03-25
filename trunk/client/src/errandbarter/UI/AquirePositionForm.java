@@ -39,6 +39,7 @@ public class AquirePositionForm extends Form implements CommandListener {
         append(timeoutItem);
 
         addCommand(new Command("Cancel", Command.STOP, 0));
+        setCommandListener(this);
 
         TimerTask tt = new TimerTask() {
 
@@ -59,6 +60,12 @@ public class AquirePositionForm extends Form implements CommandListener {
     private void gotoNext() {
         System.out.println("GOTO NEXT!");
         t.cancel();
+        Display.getDisplay(eb).setCurrent(new MainForm(eb));
+        try {
+            Thread.sleep(50); // some threading issue...
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         Display.getDisplay(eb).setCurrent(new MainForm(eb));
     }
 

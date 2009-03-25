@@ -32,11 +32,11 @@ public class AnswerForm extends Form implements CommandListener, ItemCommandList
     private Command rewardCommand = new Command("Give reward", Command.ITEM, 0);
     private final Answer answer;
     private final Displayable previous;
-    private StringItem userItem;
-    private StringItem answerItem;
-    private StringItem locationItem;
-    private StringItem timeItem;
-    private StringItem rewardedItem;
+    private IconItem userItem;
+    private IconItem answerItem;
+    private IconItem locationItem;
+    private IconItem timeItem;
+    private IconItem rewardedItem;
     private final boolean questionRewarded;
     private Errand errand;
 
@@ -51,24 +51,24 @@ public class AnswerForm extends Form implements CommandListener, ItemCommandList
         addCommand(backCommand);
         setCommandListener(this);
 
-        userItem = new StringItem("User", answer.getUser());
+        userItem = new IconItem(eb, Icons.getInstance().user, "User", answer.getUser());
         userItem.setDefaultCommand(openCommand);
         userItem.setItemCommandListener(this);
         append(userItem);
 
-        answerItem = new StringItem("Answer", answer.getAnswer().trim());
+        answerItem = new IconItem(eb, Icons.getInstance().answer, "Answer", answer.getAnswer().trim());
         append(answerItem);
 
-        locationItem = new StringItem("Location", "lat: " + answer.getLocation().getLatitude() + " long: " + answer.getLocation().getLongitude());
+        locationItem = new IconItem(eb, Icons.getInstance().location, "Location", "lat: " + answer.getLocation().getLatitude() + " long: " + answer.getLocation().getLongitude());
         append(locationItem);
 
-        timeItem = new StringItem("Time", new Date(answer.getTimestamp()).toString());
+        timeItem = new IconItem(eb, Icons.getInstance().clock, "Time", new Date(answer.getTimestamp()).toString());
         append(timeItem);
 
         if (answer.getPointsRewarded() > 0) {
-            rewardedItem = new StringItem("Rewarded", "Yes");
+            rewardedItem = new IconItem(eb, Icons.getInstance().reward, "Rewarded", "Yes");
         } else {
-            rewardedItem = new StringItem("Rewarded", "No");
+            rewardedItem = new IconItem(eb, Icons.getInstance().reward, "Rewarded", "No");
             if (!questionRewarded && errand.getUser().equalsIgnoreCase(eb.getServerConnection().getUserId())) {
                 rewardedItem.setDefaultCommand(rewardCommand);
                 rewardedItem.setItemCommandListener(this);
