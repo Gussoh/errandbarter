@@ -12,6 +12,7 @@ import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.location.QualifiedCoordinates;
 import org.kxml2.io.KXmlParser;
 import org.kxml2.kdom.Document;
 import org.kxml2.kdom.Element;
@@ -67,8 +68,15 @@ public class ServerConnection {
         new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
             public void transfer() throws Exception {
+                QualifiedCoordinates location = eb.getPositioning().getPosition();
+                
                 String command = "perform";
-                String[] arguments = new String[]{"id=" + id, "answer=" + answer}; // TODO: add location
+                String[] arguments;
+                if (location == null) {
+                    arguments = new String[]{"id=" + id, "answer=" + answer};
+                } else {
+                    arguments = new String[]{"id=" + id, "answer=" + answer, "latitude=" + location.getLatitude(), "longitude=" + location.getLongitude()};
+                } // TODO: add location
                 fetch(command, arguments);
                 dataListener.onOK(command, arguments);
             }
@@ -194,7 +202,15 @@ public class ServerConnection {
 
             public void transfer() throws Exception {
                 String command = "list";
-                String[] arguments = new String[]{"latitude=3.4", "longitude=4.5"}; // TODO: insert real values
+                QualifiedCoordinates location = eb.getPositioning().getPosition();
+
+                String[] arguments = null;
+                if (location == null) {
+                    throw new OperationException("Have not yet aquired current position.");
+                } else {
+                    arguments = new String[]{"latitude=" + location.getLatitude(), "longitude=" + location.getLongitude()};
+                } // TODO: add location
+
                 Document d = fetch(command, arguments);
 
                 dataListener.onErrandsList(createErrands(d.getRootElement()), command, arguments);
@@ -355,6 +371,7 @@ public class ServerConnection {
 
         double latitude = 0, longitude = 0;
         int range = Location.RANGE_UNDEFINED;
+        double distance = Location.DISTANCE_UNDEFINED;
         String name = root.getText(0);
 
         boolean latitudeFound = false, longitudeFound = false;
@@ -369,6 +386,8 @@ public class ServerConnection {
                     longitude = Double.parseDouble(root.getAttributeValue(i));
                 } else if (root.getAttributeName(i).equalsIgnoreCase("range")) {
                     range = Integer.parseInt(root.getAttributeValue(i));
+                } else if (root.getAttributeName(i).equalsIgnoreCase("distance")) {
+                    distance = Double.parseDouble(root.getAttributeValue(i));
                 }
             }
         } catch (NumberFormatException e) {
@@ -377,7 +396,7 @@ public class ServerConnection {
         }
 
         if (latitudeFound && longitudeFound) {
-            return new Location(latitude, longitude, range, name);
+            return new Location(latitude, longitude, range, name, distance);
         } else {
             throw new OperationException("Missing latitude or longitude coordinates.");
         }
@@ -387,7 +406,7 @@ public class ServerConnection {
 
     private Document fetch(String path, String[] variables) throws Exception {
 
-        Thread.sleep(1500); // TODO: remove
+        Thread.sleep(50); // The emulator is buggy without this. Sometimes no "yes" button is provided.
 
         StringBuffer sb = new StringBuffer(address);
         sb.append(path);
@@ -411,9 +430,12 @@ public class ServerConnection {
         parser.setInput(c.openInputStream(), "UTF-8");
         Document d = new Document();
         d.parse(parser);
+        int responseCode = c.getResponseCode();
         c.close();
 
-        if (d.getChildCount() > 0) {
+        System.out.println("CONNECTION: " + sb.toString());
+
+        if (d.getChildCount() > 0 && responseCode == 200) {
             Element root = d.getRootElement();
 
             boolean error = false;
@@ -443,7 +465,7 @@ public class ServerConnection {
                 }
             }
         } else {
-            throw new OperationException("Server response contained no data.");
+            throw new OperationException("Server response contained no data. Response code: " + responseCode);
         }
         return d;
     }
