@@ -1,5 +1,5 @@
 /*
- * ViewErrandServlet.java
+ * ListErrandsPerformedByUserServlet.java
  *
  * Created on March 19, 2009, 12:05 AM
  */
@@ -19,11 +19,11 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 /**
- * 
+ *
  * @author Zach
  * @version
  */
-public class ListErrandsServlet extends HttpServlet {
+public class ListErrandsPerformedByUserServlet extends HttpServlet {
 
 	private ErrandDAO errandDAO;
 	private XMLWriter xmlWriter;
@@ -36,8 +36,7 @@ public class ListErrandsServlet extends HttpServlet {
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-	 * methods. /list?latitude=3.234&longitude=234.34 (range parameter is
-	 * optional)
+	 * methods. /listErrandsPerformed?user=gussoh 
 	 * 
 	 * @param request
 	 *            servlet request
@@ -50,20 +49,13 @@ public class ListErrandsServlet extends HttpServlet {
 		response.setContentType("text/xml;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		try {
-			double latitude = Double.parseDouble(request.getParameter("latitude"));
-			double longitude = Double.parseDouble(request.getParameter("longitude"));
-			int range = Integer.parseInt(request.getParameter("range"));
-			
-			List<Errand> errandList = errandDAO.findByLocation(longitude, latitude, range);
-			String xmlOutput = xmlWriter.getXML(errandList);
-			out.print(xmlOutput);		
-		} catch(NumberFormatException e) {
-			out.println(xmlWriter.getXML(new Response("Request parameters are not in correct format.", "ERROR")));
-		}
-		
+		String user = request.getParameter("user");
+
+		List<Errand> errandList = errandDAO.findByUserPerformed(user);
+		String xmlOutput = xmlWriter.getXML(errandList);
+		out.print(xmlOutput);
+
 		out.close();
-		
 	}
 
 	// <editor-fold defaultstate="collapsed"

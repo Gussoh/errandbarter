@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface ErrandDAO extends GenericDAO<Errand, Integer> {
 
-    public List<Errand> findByLocation(double x, double y, int range);
+    public List<Errand> findByLocation(double longitude, double latitude, int range);
 
     public List<Errand> findByOwner(String user);
     
