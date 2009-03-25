@@ -44,7 +44,7 @@ public class UserInfoServlet extends HttpServlet {
         response.setContentType("text/xml;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        String id = request.getParameter("id");
+        String id = request.getParameter("user");
         User user = userDAO.findById(id);
         String xmlOutput = xmlWriter.getXML(user);
         out.print(xmlOutput);
