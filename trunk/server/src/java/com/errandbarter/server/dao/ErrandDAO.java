@@ -17,5 +17,5 @@ public interface ErrandDAO extends GenericDAO<Errand, Integer> {
 
     public List<Errand> findByOwner(String user);
     
-    public List<Errand> findByUser(String user);
+    public List<Errand> findByUserPerformed(String user);
 }

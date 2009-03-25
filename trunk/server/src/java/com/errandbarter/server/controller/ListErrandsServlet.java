@@ -19,71 +19,79 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 /**
- *
+ * 
  * @author Zach
  * @version
  */
 public class ListErrandsServlet extends HttpServlet {
-    
-    private ErrandDAO errandDAO;
-    private XMLWriter xmlWriter;
-    
-    public void init() {
-        DAOFactory daoFactory = MockDAOFactory.getInstance();
-        errandDAO = daoFactory.getErrandDAO();
-        xmlWriter = SimpleXMLWriter.getInstance();
-    }
-    
-    /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * /list?latitude=3.234&longitude=234.34 (range parameter is optional)
-     * @param request servlet request
-     * @param response servlet response
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        
-        response.setContentType("text/xml;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        
-        try {
-            
-            double latitude = Double.parseDouble(request.getParameter("latitude"));
-            double longtitude = Double.parseDouble(request.getParameter("longitude"));
-            int range = Integer.parseInt(request.getParameter("range"));
-            
-            List<Errand> errandList = errandDAO.findByLocation(latitude, longtitude, range);
-            String xmlOutput = xmlWriter.getXML(errandList);
-            out.print(xmlOutput);
-        } catch(NumberFormatException e) {
-            out.print(xmlWriter.getXML(new Response("ERROR", "Request parameters are in bad format.")));
-        }
-        
-        out.close();
-    }
-    
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
-    }
-    
-    /** Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
-    }
-    
-    /** Returns a short description of the servlet.
-     */
-    public String getServletInfo() {
-        return "Short description";
-    }
-    // </editor-fold>
+
+	private ErrandDAO errandDAO;
+	private XMLWriter xmlWriter;
+
+	public void init() {
+		DAOFactory daoFactory = MockDAOFactory.getInstance();
+		errandDAO = daoFactory.getErrandDAO();
+		xmlWriter = SimpleXMLWriter.getInstance();
+	}
+
+	/**
+	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+	 * methods. /list?latitude=3.234&longitude=234.34 (range parameter is
+	 * optional)
+	 * 
+	 * @param request
+	 *            servlet request
+	 * @param response
+	 *            servlet response
+	 */
+	protected void processRequest(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		response.setContentType("text/xml;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+
+		String user = request.getParameter("user");
+
+		List<Errand> errandList = errandDAO.findByUserPerformed(user);
+		String xmlOutput = xmlWriter.getXML(errandList);
+		out.print(xmlOutput);
+
+		out.close();
+	}
+
+	// <editor-fold defaultstate="collapsed"
+	// desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+	/**
+	 * Handles the HTTP <code>GET</code> method.
+	 * 
+	 * @param request
+	 *            servlet request
+	 * @param response
+	 *            servlet response
+	 */
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
+
+	/**
+	 * Handles the HTTP <code>POST</code> method.
+	 * 
+	 * @param request
+	 *            servlet request
+	 * @param response
+	 *            servlet response
+	 */
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
+
+	/**
+	 * Returns a short description of the servlet.
+	 */
+	public String getServletInfo() {
+		return "Short description";
+	}
+	// </editor-fold>
 }
