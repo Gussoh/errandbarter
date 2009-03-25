@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class MockDAOFactory implements DAOFactory {
     
-    private final static MockDAOFactory singleton = new MockDAOFactory();
+    private final static MockDAOFactory INSTANCE = new MockDAOFactory();
     
     private ErrandDAO errandDAO;
     private UserDAO userDAO;
@@ -29,13 +29,13 @@ public class MockDAOFactory implements DAOFactory {
     
     protected MockDAOFactory() {
         //init mock DAOs with mock data and populate data (TODO)
-        Map errandDB = new Hashtable<Integer, Errand>();
+        Map<Integer, Errand> errandDB = new Hashtable<Integer, Errand>();
         errandDAO = new MockErrandDAO(errandDB);
         
-        Map userDB = new Hashtable<String, User>();
+        Map<String, User> userDB = new Hashtable<String, User>();
         userDAO = new MockUserDAO(userDB);
         
-        Map answerDB = new Hashtable<Integer, Answer>();
+        Map<Integer, Answer> answerDB = new Hashtable<Integer, Answer>();
         answerDAO = new MockAnswerDAO(answerDB);
     }
     
