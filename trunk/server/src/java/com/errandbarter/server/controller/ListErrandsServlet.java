@@ -53,7 +53,9 @@ public class ListErrandsServlet extends HttpServlet {
 		try {
 			double latitude = Double.parseDouble(request.getParameter("latitude"));
 			double longitude = Double.parseDouble(request.getParameter("longitude"));
-			int range = Integer.parseInt(request.getParameter("range"));
+			String _range = request.getParameter("range");
+			int range = 0; 
+			if(_range != null) range = Integer.parseInt(_range);
 			
 			List<Errand> errandList = errandDAO.findByLocation(longitude, latitude, range);
 			String xmlOutput = xmlWriter.getXML(errandList);
