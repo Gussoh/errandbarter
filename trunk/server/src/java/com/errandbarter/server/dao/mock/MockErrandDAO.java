@@ -48,7 +48,12 @@ public class MockErrandDAO implements ErrandDAO {
 			double distance = getDistance(longitude, latitude, 
 					errand.getLocationLongtitude(), errand.getLocationLatitude());
 			errand.setDistance(distance);
-			if(distance < range) results.add(errand);
+			
+			if(range == -1) {
+				if(errand.getDistance() < errand.getLocationRange()) results.add(errand);
+			} else {
+				if(distance < range) results.add(errand);
+			}
 		}
 		return results;
 	}
