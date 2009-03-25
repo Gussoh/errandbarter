@@ -4,14 +4,8 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 	<servlet>
-		<servlet-name>errorPage</servlet-name>
-		<jsp-file>/WEB-INF/jspf/error.jspf</jsp-file>
-	</servlet>
-
-	<servlet>
 		<servlet-name>ListErrandsCreatedByUser</servlet-name>
-		<servlet-class>
-			com.errandbarter.server.controller.ListErrandsCreatedByUserServlet</servlet-class>
+		<servlet-class>com.errandbarter.server.controller.ListErrandsCreatedByUserServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>ViewErrandServlet</servlet-name>
