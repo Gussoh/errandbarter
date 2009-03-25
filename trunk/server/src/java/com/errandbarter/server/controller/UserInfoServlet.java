@@ -48,7 +48,6 @@ public class UserInfoServlet extends HttpServlet {
         User user = userDAO.findById(id);
         String xmlOutput = xmlWriter.getXML(user);
         out.print(xmlOutput);
-    
         out.close();
     }
     
