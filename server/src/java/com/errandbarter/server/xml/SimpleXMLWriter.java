@@ -34,15 +34,32 @@ public class SimpleXMLWriter implements XMLWriter {
     }
     
     public String getXML(Errand errand) {
-        return null;
+        String errandXML = "<errand id=\"" + errand.getId()
+                + "\" timeout=\"" + errand.getTimeout() + "\" user=\"" + errand.getUser()
+                + "\" userReliability=\"" + errand.getUserReliability()
+                + "\" price=\"" + errand.getPrice()
+                + "\"><location lat=\"" + errand.getLocationLatitude()
+                + "\" long=\"" + errand.getLocationLongtitude()
+                + "\" range=\"" + errand.getLocationRange()
+                + "\">" + errand.getLocation()
+                + "</location><description>" + errand.getDescription()
+                + "</description></errand>";
+        return errandXML;
     }
     
     public String getXML(User user) {
-        return null;
+        String userXML = "<user id=\"" + user.getId() + "\"><balance>" + user.getBalance()
+                + "</balance><disposablebalance>" + user.getDisposableBalance()
+                + "</disposablebalance><reliability>" + user.getReliability()
+                + "</reliability></user>";
+        return userXML;
     }
     
     public String getXML(Response response) {
-        return null;
+        String responseXML = "<response><status>" + response.getStatus()
+                + "</response><message>" + response.getMessage()
+                + "</message></response>";
+        return responseXML;
     }
     
 }
