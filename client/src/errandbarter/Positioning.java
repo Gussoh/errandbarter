@@ -27,10 +27,13 @@ public class Positioning extends Thread {
 
     public Positioning() throws LocationException {
         Criteria c = new Criteria();
-        c.setCostAllowed(false);
-        c.setHorizontalAccuracy(300); // accurate to 300 meters
+        //c.setCostAllowed(false);
+        //c.setHorizontalAccuracy(300); // accurate to 300 meters
         // accurate to 300 meters
         lp = LocationProvider.getInstance(c);
+        if (lp == null) {
+            throw new LocationException("Cannot get locationprovider");
+        }
     }
 
     public void addPositionListener(PositionListener pl) {

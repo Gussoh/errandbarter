@@ -8,6 +8,7 @@ import errandbarter.Answer;
 import errandbarter.DataListener;
 import errandbarter.Errand;
 import errandbarter.ErrandBarter;
+import errandbarter.Location;
 import errandbarter.User;
 import java.util.Vector;
 import javax.microedition.lcdui.Command;
@@ -33,6 +34,9 @@ public class ErrandForm extends Form implements DataListener, CommandListener, I
     private StringItem descriptionItem = new StringItem("Description", "?");
     private StringItem updateItem = new StringItem("Update", "update errand");
     private StringItem answerItem = new StringItem("Answer", "Write answer");
+    private StringItem locationItem = new StringItem("Location", "?");
+    private StringItem positionItem = new StringItem("Position", "?");
+    private StringItem distanceItem = new StringItem("Distance", "?");
 
     private Errand errand;
 
@@ -51,7 +55,10 @@ public class ErrandForm extends Form implements DataListener, CommandListener, I
         ownerItem.setDefaultCommand(openCommand);
         ownerItem.setItemCommandListener(this);
         append(ownerItem);
+        append(locationItem);
         append(descriptionItem);
+        append(positionItem);
+        append(distanceItem);
 
     }
 
@@ -63,7 +70,12 @@ public class ErrandForm extends Form implements DataListener, CommandListener, I
         setTitle("Errand  $" + errand.getPrice());
         ownerItem.setText(errand.getUser());
         descriptionItem.setText(errand.getDescription().trim());
-
+        positionItem.setText("Lat: " + errand.getLocation().getLatitude() + ", Long: " + errand.getLocation().getLongitude());
+        if (errand.getLocation().getDistance() != Location.DISTANCE_UNDEFINED) {
+            distanceItem.setText(errand.getLocation().getDistance() + "m");
+        }
+        locationItem.setText(errand.getLocation().getName().replace('\n', ' ').trim());
+        
         answerItems = new StringItem[errand.getAnswers().size()];
         answers = new Answer[errand.getAnswers().size()];
 
