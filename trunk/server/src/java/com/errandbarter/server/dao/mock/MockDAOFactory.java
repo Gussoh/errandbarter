@@ -33,7 +33,6 @@ public class MockDAOFactory implements DAOFactory {
         errandDB.put(1, new Errand(1, 1234567890, "zach", 0.8,
 			50, "Hotel Ravishankar", 0, 0, 0, 0, " What is the name of the really cute waitress in the bar?"));
         errandDAO = new MockErrandDAO(errandDB);
-        
 
         Map<String, User> userDB = new Hashtable<String, User>();
         userDB.put("zach", new User("zach", 100, 50, 0.8));
