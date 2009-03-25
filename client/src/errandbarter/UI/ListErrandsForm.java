@@ -41,12 +41,12 @@ public class ListErrandsForm extends Form implements DataListener, CommandListen
     }
 
     public void onErrandsList(Vector errands, String command, String[] arguments) {
-        errandsItems = new StringItem[errands.size()];
+        errandsItems = new Item[errands.size()];
         errandsIds = new int[errands.size()];
 
         for (int i = 0; i < errands.size(); i++) {
             Errand errand = (Errand) errands.elementAt(i);
-            errandsItems[i] = new StringItem("$" + errand.getPrice(), errand.getDescription().replace('\n', ' ').trim());
+            errandsItems[i] = new IconItem(eb, Icons.getInstance().errand, "$" + errand.getPrice(), errand.getDescription().replace('\n', ' ').trim());
             errandsItems[i].setDefaultCommand(openCommand);
             errandsItems[i].setItemCommandListener(this);
             errandsIds[i] = errand.getId();

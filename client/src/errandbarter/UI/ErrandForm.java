@@ -30,17 +30,17 @@ public class ErrandForm extends Form implements DataListener, CommandListener, I
     private Command backCommand = new Command("Back", Command.BACK, 0);
     private Command openCommand = new Command("Open", Command.ITEM, 0);
 
-    private StringItem ownerItem = new StringItem("Owner", "?");
-    private StringItem descriptionItem = new StringItem("Description", "?");
-    private StringItem updateItem = new StringItem("Update", "update errand");
-    private StringItem answerItem = new StringItem("Answer", "Write answer");
-    private StringItem locationItem = new StringItem("Location", "?");
-    private StringItem positionItem = new StringItem("Position", "?");
-    private StringItem distanceItem = new StringItem("Distance", "?");
+    private IconItem ownerItem;
+    private IconItem descriptionItem;
+    private IconItem updateItem;
+    private IconItem answerItem;
+    private IconItem locationItem;
+    private IconItem positionItem;
+    private IconItem distanceItem;
 
     private Errand errand;
 
-    private StringItem[] answerItems;
+    private IconItem[] answerItems;
     private Answer[] answers;
 
     private Displayable previous;
@@ -49,6 +49,15 @@ public class ErrandForm extends Form implements DataListener, CommandListener, I
         super("View Errand");
         this.eb = eb;
         this.previous = previous;
+
+ownerItem = new IconItem(eb, Icons.getInstance().user, "Owner", "?");
+descriptionItem = new IconItem(eb, Icons.getInstance().description, "Description", "?");
+updateItem = new IconItem(eb, Icons.getInstance().update, "Update", "");
+answerItem = new IconItem(eb, Icons.getInstance().answer_add, "Write answer", "");
+locationItem = new IconItem(eb, Icons.getInstance().location, "Location", "?");
+positionItem = new IconItem(eb, Icons.getInstance().position, "Position", "?");
+distanceItem = new IconItem(eb, Icons.getInstance().distance, "Distance", "?");
+
         addCommand(backCommand);
         setCommandListener(this);
 
@@ -76,12 +85,12 @@ public class ErrandForm extends Form implements DataListener, CommandListener, I
         }
         locationItem.setText(errand.getLocation().getName().replace('\n', ' ').trim());
         
-        answerItems = new StringItem[errand.getAnswers().size()];
+        answerItems = new IconItem[errand.getAnswers().size()];
         answers = new Answer[errand.getAnswers().size()];
 
         for (int i = 0; i < errand.getAnswers().size(); i++) {
             Answer answer = (Answer) errand.getAnswers().elementAt(i);
-            answerItems[i] = new StringItem("Answer", answer.getAnswer().replace('\n', ' ').trim());
+            answerItems[i] = new IconItem(eb, Icons.getInstance().answer, "Answer", answer.getAnswer().replace('\n', ' ').trim());
             answers[i] = answer;
             answerItems[i].setDefaultCommand(openCommand);
             answerItems[i].setItemCommandListener(this);
