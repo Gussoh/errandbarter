@@ -27,7 +27,7 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
     public final int SPACER_SIZE = 15;
     private ErrandBarter eb;
     private IconItem userInfo;
-    private StringItem[] locationErrands = new StringItem[3];
+    private IconItem[] locationErrands = new IconItem[3];
     private IconItem listNearErrands;
     private IconItem ownErrands;
     private int[] locationErrandsIds = new int[locationErrands.length];
@@ -60,7 +60,7 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
 
         append(new IconItem(eb, Icons.getInstance().errand, "Errands close to you", ""));
         for (int i = 0; i < locationErrands.length; i++) {
-            locationErrands[i] = new StringItem("", "");
+            locationErrands[i] = new IconItem(eb, Icons.getInstance().errand, "", "");
             append(locationErrands[i]);
             locationErrands[i].setItemCommandListener(this);
             locationErrandCommands[i] = openItemCommand;
@@ -133,7 +133,7 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
             ownErrands.setText(errands.size() + " errands with " + ownErrandsAnswerCount + " answers");
         } else {
             for (int i = 0; i < locationErrands.length; i++) {
-                StringItem locationErrand = locationErrands[i];
+                IconItem locationErrand = locationErrands[i];
                 locationErrand.setDefaultCommand(null);
                 locationErrand.setText("");
                 locationErrand.setLabel("");
