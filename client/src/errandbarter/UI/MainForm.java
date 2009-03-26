@@ -11,12 +11,11 @@ import errandbarter.User;
 import java.util.Vector;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
-import javax.microedition.lcdui.Spacer;
-import javax.microedition.lcdui.StringItem;
 
 /**
  *
@@ -33,6 +32,7 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
     private int[] locationErrandsIds = new int[locationErrands.length];
     private Command[] locationErrandCommands = new Command[locationErrands.length];
     private IconItem updateItem;
+    private IconItem optionsItem;
 
     private final Command openItemCommand = new Command("Open", Command.ITEM, 0);
 
@@ -44,6 +44,7 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
         updateItem = new IconItem(eb, Icons.getInstance().update, "Update", "");
         listNearErrands = new IconItem(eb, Icons.getInstance().errand_list, "List more errands near you", "");
         ownErrands = new IconItem(eb, Icons.getInstance().errand_own, "Own errands", "?");
+        optionsItem = new IconItem(eb, Icons.getInstance().options, "Options", "");
 
         append(userInfo);
         userInfo.setItemCommandListener(this);
@@ -66,17 +67,19 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
             locationErrandCommands[i] = openItemCommand;
         }
 
-        append(new SpacerTwo(SPACER_SIZE, SPACER_SIZE));
-
         listNearErrands.setDefaultCommand(openItemCommand);
         listNearErrands.setItemCommandListener(this);
         append(listNearErrands);
-
+        
         append(new SpacerTwo(SPACER_SIZE, SPACER_SIZE));
-
+        
         updateItem.setDefaultCommand(openItemCommand);
         updateItem.setItemCommandListener(this);
         append(updateItem);
+
+        optionsItem.setDefaultCommand(openItemCommand);
+        optionsItem.setItemCommandListener(this);
+        append(optionsItem);
 
         update();
     }
@@ -91,7 +94,10 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
     }
 
     public void commandAction(Command c, Item item) {
-        if (item == userInfo) {
+        if (item == optionsItem) {
+            OptionsForm of = new OptionsForm(eb, this);
+            Display.getDisplay(eb).setCurrent(of);
+        } else if (item == userInfo) {
             UserInfoForm uif = new UserInfoForm(eb, this);
             eb.getServerConnection().getUserInfo(uif, uif, this);
         } else if(item == ownErrands) {
@@ -136,7 +142,7 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
                 IconItem locationErrand = locationErrands[i];
                 locationErrand.setDefaultCommand(null);
                 locationErrand.setText("");
-                locationErrand.setLabel("");
+                locationErrand.setLabel("-");
             }
             for (int i = 0; i < errands.size() && i < locationErrands.length; i++) {
                 Errand errand = (Errand) errands.elementAt(i);

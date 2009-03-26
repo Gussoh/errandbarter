@@ -16,7 +16,7 @@ public class Icons {
 
     public Image user, update, errand, errand_own, errand_list, errand_more, errand_answered, balance, 
             balance_disposable, description, answer_add, answer, location, position, distance, clock,
-            reward;
+            reward, options, server, about, delete, phone;
 
     private static Icons instance;
 
@@ -39,9 +39,13 @@ public class Icons {
             distance = Image.createImage("/car.png");
             clock = Image.createImage("/clock.png");
             reward = Image.createImage("/money_add.png");
+            options = Image.createImage("/wrench.png");
+            server = Image.createImage("/server.png");
+            about = Image.createImage("/information.png");
+            delete = Image.createImage("/cross.png");
+            phone = Image.createImage("/phone.png");
         } catch (IOException ex) {
             ex.printStackTrace();
-            user = Image.createImage(0, 0);
         }
         
     }
