@@ -20,8 +20,9 @@ import javax.microedition.rms.RecordStoreException;
  */
 public class ErrandBarter extends MIDlet {
 
-    ServerConnection serverConnection;
-    Positioning positioning;
+    private ServerConnection serverConnection;
+    private Positioning positioning;
+    public final int version = 1;
 
     protected void startApp() throws MIDletStateChangeException {
         WelcomeForm wf = new WelcomeForm(this);
