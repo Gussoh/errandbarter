@@ -93,11 +93,31 @@ public class MockErrandDAO implements ErrandDAO {
 		this.answerDAO = answerDAO;
 	}
 
-	private double getDistance(double long_a, double lat_a, double long_b,
-			double lat_b) {
-		return 69.1 * (lat_b - lat_a) * 69.1 * (lat_b - lat_a) + 69.1
+    // calculates the spherical distance in kilometres between 2 latitude, longitude coordinates
+    // code adapted from The Android Open Source Project - GlobalTime.java - samples/GlobalTime/src/com/android/globaltime
+	private double getDistance(double lat_a, double long_a, double lat_b, double long_b) {
+		
+      	// convert coordinates from degrees to radians
+        lat_a /= 57.29578;
+        lat_b /= 57.29578;
+        long_a /= 57.29578;
+        long_b /= 57.29578;
+
+        double r = 6371.0; // Radius of the earth in km
+        double latDiff = lat_b - lat_a;
+        double lonDiff = long_b - long_a;
+        double sinlat2 = Math.sin(latDiff / 2);
+        sinlat2 *= sinlat2;
+        double sinlon2 = Math.sin(lonDiff / 2);
+        sinlon2 *= sinlon2;
+
+        double a = sinlat2 + Math.cos(lat_a) * Math.cos(lat_b) * sinlon2;
+        double c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return r * c;
+
+        /*return 69.1 * (lat_b - lat_a) * 69.1 * (lat_b - lat_a) + 69.1
 				* (long_b - long_a) * Math.cos(lat_a / 57.3) * 69.1
-				* (long_b - long_a) * Math.cos(lat_a / 57.3);
+				* (long_b - long_a) * Math.cos(lat_a / 57.3);*/
 
 	}
 
