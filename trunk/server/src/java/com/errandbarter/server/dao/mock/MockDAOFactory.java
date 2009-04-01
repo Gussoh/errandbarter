@@ -12,6 +12,8 @@ import com.errandbarter.server.dao.UserDAO;
 import com.errandbarter.server.entity.Answer;
 import com.errandbarter.server.entity.Errand;
 import com.errandbarter.server.entity.User;
+
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -29,11 +31,6 @@ public class MockDAOFactory implements DAOFactory {
 
 	protected MockDAOFactory() {
         //init mock DAOs with mock data and populate data (TODO)
-        Map<Integer, Errand> errandDB = new Hashtable<Integer, Errand>();
-        errandDB.put(1, new Errand(1, 1234567890, "zach", 0.8,
-			50, "Hotel Ravishankar", 0, 0, 0, 0, " What is the name of the really cute waitress in the bar?"));
-        errandDAO = new MockErrandDAO(errandDB);
-
         Map<String, User> userDB = new Hashtable<String, User>();
         userDB.put("zach", new User("zach", 100, 50, 0.8));
         userDB.put("daniel", new User("daniel", 100, 50, 0.8));
@@ -41,7 +38,15 @@ public class MockDAOFactory implements DAOFactory {
         userDAO = new MockUserDAO(userDB);
         
         Map<Integer, Answer> answerDB = new Hashtable<Integer, Answer>();
+        answerDB.put(1, new Answer(1, 1, "daniel", new Date(), 0, 0, 0, "Amy"));
+        
         answerDAO = new MockAnswerDAO(answerDB);
+        
+        Map<Integer, Errand> errandDB = new Hashtable<Integer, Errand>();
+        errandDB.put(1, new Errand(1, 1234567890, "zach", 0.8,
+			50, "Hotel Ravishankar", 0, 0, 0, 0, " What is the name of the really cute waitress in the bar?"));
+        errandDAO = new MockErrandDAO(errandDB, answerDAO);
+
     }
 
 	public static MockDAOFactory getInstance() {
