@@ -17,14 +17,23 @@ public class Response {
     
     private String message;
     private String status;
+
+    public static final int STATUS_ERROR = 1, STATUS_OK = 0;
     
     /** Creates a new instance of Response */
     public Response() {
     }
     
-    public Response(String message, String status) {
+    public Response(int statusI, String message) {
         this.message = message;
-        this.status = status;
+        switch (statusI) {
+            case STATUS_OK:
+                status = "OK";
+                break;
+            case STATUS_ERROR:
+                status = "ERROR";
+                break;
+        }
     }
     
     public String getMessage() {

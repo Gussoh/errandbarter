@@ -30,7 +30,10 @@ public class SimpleXMLWriter implements XMLWriter {
     }
 
     public String getXML(List<Errand> errands) {
-        String errandsListXML = "<errands>";
+
+        errands.add(new Errand(21321, 123242, "test", 0.4, 34, "bry", 3.4, 5.6, 23, 324, "tjabba"));
+
+        String errandsListXML = "<errands>\n";
 
         for (Errand errand : errands) {
             errandsListXML += getXML(errand);
@@ -42,6 +45,11 @@ public class SimpleXMLWriter implements XMLWriter {
     }
 
     public String getXML(Errand errand) {
+
+        if (errand == null) {
+            return getXML(new Response(Response.STATUS_ERROR, "Errand does not exist"));
+        }
+
         String errandXML = new String();
         /* "<errand id=\"" + errand.getId()
         + "\" timeout=\"" + errand.getTimeout() + "\" user=\"" + errand.getUser()
@@ -55,25 +63,30 @@ public class SimpleXMLWriter implements XMLWriter {
         + "</location><description>" + errand.getDescription()
         + "</description></errand>";
          */
-        errandXML += "<errand id=\"" + errand.getId() + "\" timeout=\"" + errand.getTimeout() + "\" user=\"" + errand.getUser() + "\" userReliability=\"" + errand.getUserReliability() + "\" price=\"" + errand.getPrice() + "\"><location lat=\"" + errand.getLocationLatitude() + "\" long=\"" + errand.getLocationLongtitude() + "\" range=\"" + errand.getLocationRange() + "\" distance=\"" + errand.getDistance() + "\">" + errand.getLocation() + "</location><description>" + errand.getDescription() + "</description><answers>";
+        errandXML += "<errand id=\"" + errand.getId() + "\" timeout=\"" + errand.getTimeout() + "\" user=\"" + errand.getUser() + "\" userReliability=\"" + errand.getUserReliability() + "\" price=\"" + errand.getPrice() + "\">\n<location lat=\"" + errand.getLocationLatitude() + "\" long=\"" + errand.getLocationLongtitude() + "\" range=\"" + errand.getLocationRange() + "\" distance=\"" + errand.getDistance() + "\">" + errand.getLocation() + "</location>\n<description>" + errand.getDescription() + "</description>\n<answers>";
 
         // get list of answers for the errand
-        if (errand.getAnswers() != null)  {
+        if (errand.getAnswers() != null) {
             for (Answer answer : errand.getAnswers()) {
-                errandXML += "<answer id=\"" + answer.getId() + "\" user=\"" + answer.getUserID() + "\" timestamp=\"" + answer.getTimestamp().toString() + "\" lat=\"" + answer.getLatitude() + "\" long=\"" + answer.getLongitude() + "\" pointsRewards=\"" + answer.getPointsRewarded() + "\">" + answer.getInformation() + "</answer>";
+                errandXML += "<answer id=\"" + answer.getId() + "\" user=\"" + answer.getUserID() + "\" timestamp=\"" + answer.getTimestamp().toString() + "\" lat=\"" + answer.getLatitude() + "\" long=\"" + answer.getLongitude() + "\" pointsRewards=\"" + answer.getPointsRewarded() + "\">" + answer.getInformation() + "</answer>\n";
             }
         }
-        errandXML += "</answers></errand>";
+        errandXML += "</answers>\n</errand>\n";
         return errandXML;
     }
 
     public String getXML(User user) {
+
+        if (user == null) {
+            return getXML(new Response(Response.STATUS_ERROR, "User does not exist"));
+        }
+
         String userXML = "<user id=\"" + user.getId() + "\"><balance>" + user.getBalance() + "</balance><disposablebalance>" + user.getDisposableBalance() + "</disposablebalance><reliability>" + user.getReliability() + "</reliability></user>";
         return userXML;
     }
 
     public String getXML(Response response) {
-        String responseXML = "<response><status>" + response.getStatus() + "</response><message>" + response.getMessage() + "</message></response>";
+        String responseXML = "<response>\n<status>" + response.getStatus() + "</status>\n<message>" + response.getMessage() + "</message>\n</response>";
         return responseXML;
     }
 }
