@@ -31,8 +31,6 @@ public class SimpleXMLWriter implements XMLWriter {
 
     public String getXML(List<Errand> errands) {
 
-        errands.add(new Errand(21321, 123242, "test", 0.4, 34, "bry", 3.4, 5.6, 23, 324, "tjabba"));
-
         String errandsListXML = "<errands>\n";
 
         for (Errand errand : errands) {
