@@ -61,7 +61,7 @@ public class ListErrandsServlet extends HttpServlet {
 			String xmlOutput = xmlWriter.getXML(errandList);
 			out.print(xmlOutput);		
 		} catch(NumberFormatException e) {
-			out.println(xmlWriter.getXML(new Response("Request parameters are not in correct format.", "ERROR")));
+			out.println(xmlWriter.getXML(new Response(Response.STATUS_ERROR, "Request parameters are not in correct format.")));
 		}
 		
 		out.close();
