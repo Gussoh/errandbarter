@@ -35,7 +35,7 @@ public class MockDAOFactory implements DAOFactory {
         userDB.put("zach", new User("zach", 100, 50, 0.8));
         userDB.put("daniel", new User("daniel", 100, 50, 0.8));
         userDB.put("gustav", new User("gustav", 100, 50, 0.8));
-        
+        //lklklkl
         userDAO = new MockUserDAO(userDB);
         
         Map<Integer, Answer> answerDB = new Hashtable<Integer, Answer>();
