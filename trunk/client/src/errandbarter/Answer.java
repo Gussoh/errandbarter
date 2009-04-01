@@ -20,11 +20,11 @@ public class Answer {
     private int id;
     private String user;
     private String answer;
-    private int timestamp;
+    private long timestamp;
     private Location location;
     private int pointsRewarded;
 
-    public Answer(int id, String user, String answer, int timestamp, Location location, int pointsRewarded) {
+    public Answer(int id, String user, String answer, long timestamp, Location location, int pointsRewarded) {
         this.id = id;
         this.user = user;
         this.answer = answer;
@@ -49,7 +49,7 @@ public class Answer {
         return pointsRewarded;
     }
 
-    public int getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
