@@ -66,7 +66,7 @@ public class SimpleXMLWriter implements XMLWriter {
         // get list of answers for the errand
         if (errand.getAnswers() != null) {
             for (Answer answer : errand.getAnswers()) {
-                errandXML += "<answer id=\"" + answer.getId() + "\" user=\"" + answer.getUserID() + "\" timestamp=\"" + answer.getTimestamp().toString() + "\" lat=\"" + answer.getLatitude() + "\" long=\"" + answer.getLongitude() + "\" pointsRewards=\"" + answer.getPointsRewarded() + "\">" + answer.getInformation() + "</answer>\n";
+                errandXML += "<answer id=\"" + answer.getId() + "\" user=\"" + answer.getUserID() + "\" timestamp=\"" + answer.getTimestamp().getTime() + "\" lat=\"" + answer.getLatitude() + "\" long=\"" + answer.getLongitude() + "\" pointsRewards=\"" + answer.getPointsRewarded() + "\">" + answer.getInformation() + "</answer>\n";
             }
         }
         errandXML += "</answers>\n</errand>\n";
