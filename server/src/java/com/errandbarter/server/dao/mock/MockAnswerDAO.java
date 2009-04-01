@@ -17,9 +17,9 @@ import java.util.Map;
 public class MockAnswerDAO implements AnswerDAO {
 
     private Map<Integer, Answer> answers;
-
+    
     public MockAnswerDAO(Map<Integer, Answer> answers) {
-        this.answers = answers;
+        this.answers = answers;        
     }
 
     public Answer findById(Integer id) {
@@ -32,6 +32,7 @@ public class MockAnswerDAO implements AnswerDAO {
 
     public void makePersistent(Answer answer) {
         if (answer.getId() == null) {
+            //we assume max (answer.id) = answers.length;
             answer.setId(answers.size() + 1);
         }
         answers.put(answer.getId(), answer);
@@ -58,7 +59,7 @@ public class MockAnswerDAO implements AnswerDAO {
                 results.add(answer);
             }
         }
-
         return results;
     }
+    
 }

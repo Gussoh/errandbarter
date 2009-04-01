@@ -6,14 +6,14 @@
 
 package com.errandbarter.server.controller;
 
+import com.errandbarter.server.dao.AnswerDAO;
 import com.errandbarter.server.dao.DAOFactory;
-import com.errandbarter.server.dao.ErrandDAO;
 import com.errandbarter.server.dao.mock.MockDAOFactory;
-import com.errandbarter.server.entity.Errand;
+import com.errandbarter.server.entity.Answer;
 import com.errandbarter.server.xml.SimpleXMLWriter;
 import com.errandbarter.server.xml.XMLWriter;
 import java.io.*;
-import java.util.List;
+import java.util.Date;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -55,18 +55,18 @@ public class PerformErrandServlet extends HttpServlet {
 			double longitude = Double.parseDouble(request.getParameter("longitude"));
 			int errandID = Integer.parseInt(request.getParameter("id"));
 			
-			Answer answer = new Answer();
+			Answer answer = new Answer(null, errandID, request.getParameter("user"), new Date(), 
+                                longitude, latitude, 0, request.getParameter("answer"));
+			answerDAO.makePersistent(answer);
+                        
+                        String xmlOutput = xmlWriter.getXML(new Response(Response.STATUS_OK, "Errand performed"));
 			
-			String xmlOutput = xmlWriter.getXML(new Response(Response.STATUS_OK, "Request parameters are not in correct format."));
-			
-			out.print(xmlOutput);		
+                        out.print(xmlOutput);		
 		} catch(NumberFormatException e) {
 			e.printStackTrace();
-			out.println(xmlWriter.getXML(new Response(Response.STATUS_ERROR, "Errand performed")));
+			out.println(xmlWriter.getXML(new Response(Response.STATUS_ERROR, "Request parameters are not in correct format")));
 		}
-		
 		out.close();
-		
 	}
 
 	// <editor-fold defaultstate="collapsed"

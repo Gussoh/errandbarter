@@ -19,6 +19,10 @@
 		<servlet-name>ListErrandsServlet</servlet-name>
 		<servlet-class>com.errandbarter.server.controller.ListErrandsServlet</servlet-class>
 	</servlet>
+        <servlet>
+		<servlet-name>PerformErrandServlet</servlet-name>
+		<servlet-class>com.errandbarter.server.controller.PerformErrandServlet</servlet-class>
+	</servlet>
 	<servlet>
 		<servlet-name>UserInfoServlet</servlet-name>
 		<servlet-class>com.errandbarter.server.controller.UserInfoServlet</servlet-class>
@@ -40,6 +44,10 @@
 	<servlet-mapping>
 		<servlet-name>ListErrandsServlet</servlet-name>
 		<url-pattern>/list</url-pattern>
+	</servlet-mapping>
+        <servlet-mapping>
+		<servlet-name>PerformErrandServlet</servlet-name>
+		<url-pattern>/perform</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>UserInfoServlet</servlet-name>
