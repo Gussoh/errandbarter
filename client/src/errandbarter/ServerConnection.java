@@ -253,7 +253,7 @@ public class ServerConnection {
 
         int id = 0;
         String user = null;
-        int timestamp = 0;
+        long timestamp = 0;
         double latitude = 0, longitude = 0;
         int pointsRewarded = 0;
         String answer = null;
@@ -272,7 +272,7 @@ public class ServerConnection {
                             } else if (answerElement.getAttributeName(j).equalsIgnoreCase("user")) {
                                 user = answerElement.getAttributeValue(j);
                             } else if (answerElement.getAttributeName(j).equalsIgnoreCase("timestamp")) {
-                                timestamp = Integer.parseInt(answerElement.getAttributeValue(j));
+                                timestamp = Long.parseLong(answerElement.getAttributeValue(j));
                             } else if (answerElement.getAttributeName(j).equalsIgnoreCase("latitude")) {
                                 latitude = Double.parseDouble(answerElement.getAttributeValue(j));
                             } else if (answerElement.getAttributeName(j).equalsIgnoreCase("longitude")) {
