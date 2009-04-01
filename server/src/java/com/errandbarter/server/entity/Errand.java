@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class Errand implements Serializable {
 
-	private Integer id;
+    private Integer id;
     private long timeout;
     private String user;
     private double userReliability;
