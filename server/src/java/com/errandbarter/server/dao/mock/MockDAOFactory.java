@@ -44,7 +44,7 @@ public class MockDAOFactory implements DAOFactory {
         
         Map<Integer, Errand> errandDB = new Hashtable<Integer, Errand>();
         errandDB.put(1, new Errand(1, 1234567890, "zach", 0.8,
-			50, "Hotel Ravishankar", 0, 0, 0, 0, " What is the name of the really cute waitress in the bar?"));
+			50, "Orchard Borders", 1.304, 103.8353, 0, 0, " What is the name of the really cute cashier?"));
         errandDAO = new MockErrandDAO(errandDB, answerDAO);
 
     }

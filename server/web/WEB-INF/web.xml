@@ -8,6 +8,10 @@
 		<servlet-class>com.errandbarter.server.controller.ListErrandsCreatedByUserServlet</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>ListErrandsPerformedByUser</servlet-name>
+		<servlet-class>com.errandbarter.server.controller.ListErrandsPerformedByUserServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>ViewErrandServlet</servlet-name>
 		<servlet-class>com.errandbarter.server.controller.ViewErrandServlet</servlet-class>
 	</servlet>
@@ -24,6 +28,10 @@
 	<servlet-mapping>
 		<servlet-name>ListErrandsCreatedByUser</servlet-name>
 		<url-pattern>/listErrands</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ListErrandsPerformedByUser</servlet-name>
+		<url-pattern>/listErrandsPerformed</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ViewErrandServlet</servlet-name>

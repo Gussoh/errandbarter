@@ -21,6 +21,8 @@ public class MockErrandDAO implements ErrandDAO {
 	private Map<Integer, Errand> errands;
 	private AnswerDAO answerDAO;
 
+	private static final double DEFAULT_RANGE = 1; 
+	
 	public MockErrandDAO(Map<Integer, Errand> errands, AnswerDAO answerDAO) {
 		this.errands = errands;
 		this.answerDAO = answerDAO;
@@ -51,7 +53,12 @@ public class MockErrandDAO implements ErrandDAO {
 			errand.setDistance(distance);
 			
 			if(range == 0) {
-				if(errand.getDistance() < errand.getLocationRange()) results.add(errand);
+				if(errand.getLocationRange() == 0) {
+					if(errand.getDistance() <= DEFAULT_RANGE) results.add(errand);
+				} else {
+					if(errand.getDistance() <= errand.getLocationRange()) results.add(errand);
+				}
+				
 			} else {
 				if(distance < range) results.add(errand);
 			}
