@@ -52,8 +52,7 @@ public class ViewErrandServlet extends HttpServlet {
             out.print(xmlOutput);
         } catch(NumberFormatException e) {
             out.print(xmlWriter.getXML(new Response(Response.STATUS_ERROR, "Request parameter is in bad format.")));
-        } 
-        
+        }         
         out.close();
     }
     
