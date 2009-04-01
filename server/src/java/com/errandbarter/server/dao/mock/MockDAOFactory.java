@@ -64,7 +64,6 @@ public class MockDAOFactory implements DAOFactory {
         errandDB.put(3, new Errand(3, 1234567890, "gustav", 0.8,
     			30, "Orchard Cineleisure ", 1.31039, 103.83968, 0, 0, "When does the Nike sale start?"));
 
-   
         errandDAO = new MockErrandDAO(errandDB, answerDAO);
 
     }
