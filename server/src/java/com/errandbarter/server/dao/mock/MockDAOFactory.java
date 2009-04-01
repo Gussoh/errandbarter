@@ -45,6 +45,9 @@ public class MockDAOFactory implements DAOFactory {
 			String information) {
          */
         answerDB.put(1, new Answer(1, 1, "daniel", new Date(), 1.314, 103.8453, 0, "Amy"));
+        answerDB.put(1, new Answer(1, 2, "gustav", new Date(), 1.313, 103.8365, 0, "$5 at stall 1"));
+        answerDB.put(1, new Answer(1, 2, "daniel", new Date(), 1.313, 103.8365, 0, "$4 at stall 5"));
+        answerDB.put(1, new Answer(1, 3, "zach", new Date(), 1.310, 103.8396, 0, "April 1"));
         answerDAO = new MockAnswerDAO(answerDB);
         
         Map<Integer, Errand> errandDB = new Hashtable<Integer, Errand>();
@@ -54,8 +57,14 @@ public class MockDAOFactory implements DAOFactory {
 			double distance, int locationRange, String description) */
         errandDB.put(1, new Errand(1, 1234567890, "zach", 0.8,
 			50, "Orchard Borders", 1.304, 103.8353, 0, 0, " What is the name of the really cute cashier?"));
+
+        errandDB.put(2, new Errand(2, 1234567890, "zach", 0.8,
+    			30, "Newton Food ", 1.313695, 103.8365, 0, 0, " How much do the tiger prawns cost?"));
         
-        
+        errandDB.put(3, new Errand(3, 1234567890, "gustav", 0.8,
+    			30, "Orchard Cineleisure ", 1.31039, 103.83968, 0, 0, "When does the Nike sale start?"));
+
+   
         errandDAO = new MockErrandDAO(errandDB, answerDAO);
 
     }
