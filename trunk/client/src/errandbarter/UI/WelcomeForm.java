@@ -30,7 +30,7 @@ import javax.microedition.rms.RecordStoreException;
 public class WelcomeForm extends Form implements CommandListener, DataListener {
 
     private ErrandBarter eb;
-    private TextField serverAddress = new TextField("Server Address", "http://127.0.0.1/ErrandBarter/", 64, TextField.URL);
+    private TextField serverAddress = new TextField("Server Address", "http://localhost:8084/ErrandBarterServerProject/", 64, TextField.URL);
     private TextField userId = new TextField("Username", "", 64, TextField.ANY);
     private StringItem errorText = new StringItem("", "");
     private MainForm mf;
