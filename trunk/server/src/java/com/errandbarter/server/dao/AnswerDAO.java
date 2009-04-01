@@ -15,5 +15,4 @@ public interface AnswerDAO extends GenericDAO<Answer, Integer> {
 
     public List<Answer> findByErrand(int errandId);
     public List<Answer> findByUser(String userId);
-    
 }
