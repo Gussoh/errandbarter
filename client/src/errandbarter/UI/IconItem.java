@@ -79,8 +79,8 @@ public class IconItem extends CustomItem {
     }
 
     protected void paint(Graphics g, int w, int h) {
-        g.setColor(colorBG);
-        g.fillRect(0, 0, w, h);
+        /*g.setColor(colorBG);
+        g.fillRect(0, 0, w, h);*/
 
         g.drawImage(icon, 0, 0, Graphics.LEFT | Graphics.TOP);
 
