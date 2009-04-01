@@ -11,11 +11,22 @@ package errandbarter;
  */
 public class OperationException extends Exception {
 
+    private boolean cancelled = false;
+
     public OperationException(String s) {
         super(s);
     }
 
-    public OperationException() {
+    /**
+     * Use if operation was cancelled
+     * @param cancelled
+     */
+    public OperationException(boolean cancelled) {
+        super("Operation Cancelled");
+        cancelled = true;
     }
 
+    public boolean isCancelled() {
+        return cancelled;
+    }
 }

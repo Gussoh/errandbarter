@@ -5,6 +5,7 @@
 package errandbarter;
 
 import errandbarter.UI.TransferDisplay;
+import java.io.IOException;
 import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -54,10 +55,10 @@ public class ServerConnection {
     public void giveReward(final int id, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
         new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-            public void transfer() throws Exception {
+            public void transfer(TransferOperation.Fetcher fetcher) throws Exception {
                 String command = "reward";
                 String[] arguments = new String[]{"id=" + id};
-                fetch(command, arguments);
+                fetcher.fetch(command, arguments);
                 dataListener.onOK(command, arguments);
             }
         }.start();
@@ -67,9 +68,9 @@ public class ServerConnection {
         // /perform?user=Gussoh?id=123123&latitude=12312323&longitude=123124&answer=Amy // location of user running errand, optional
         new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-            public void transfer() throws Exception {
+            public void transfer(TransferOperation.Fetcher fetcher) throws Exception {
                 QualifiedCoordinates location = eb.getPositioning().getPosition();
-                
+
                 String command = "perform";
                 String[] arguments;
                 if (location == null) {
@@ -77,7 +78,7 @@ public class ServerConnection {
                 } else {
                     arguments = new String[]{"id=" + id, "answer=" + answer, "latitude=" + location.getLatitude(), "longitude=" + location.getLongitude()};
                 } // TODO: add location
-                fetch(command, arguments);
+                fetcher.fetch(command, arguments);
                 dataListener.onOK(command, arguments);
             }
         }.start();
@@ -86,10 +87,10 @@ public class ServerConnection {
     public void getErrand(final int id, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
         new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-            public void transfer() throws Exception {
+            public void transfer(TransferOperation.Fetcher fetcher) throws Exception {
                 String command = "viewErrand";
                 String[] arguments = new String[]{"id=" + id};
-                Document d = fetch(command, arguments);
+                Document d = fetcher.fetch(command, arguments);
                 dataListener.onViewErrand(createErrand(d.getRootElement()), command, arguments);
             }
         }.start();
@@ -110,10 +111,10 @@ public class ServerConnection {
 
         new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-            public void transfer() throws Exception {
+            public void transfer(TransferOperation.Fetcher fetcher) throws Exception {
                 String command = "whois";
                 String[] arguments = new String[]{"user=" + userId};
-                Document d = fetch(command, arguments);
+                Document d = fetcher.fetch(command, arguments);
 
                 int balance = 0;
                 int disposableBalance = 0;
@@ -170,10 +171,10 @@ public class ServerConnection {
 
         new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-            public void transfer() throws Exception {
+            public void transfer(TransferOperation.Fetcher fetcher) throws Exception {
                 String command = "listErrandsPerformed";
                 String[] arguments = new String[]{"user=" + user};
-                Document d = fetch(command, arguments);
+                Document d = fetcher.fetch(command, arguments);
                 dataListener.onErrandsList(createErrands(d.getRootElement()), command, arguments);
             }
         }.start();
@@ -187,10 +188,10 @@ public class ServerConnection {
     public void listErrandsBy(final String user, final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
         new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-            public void transfer() throws Exception {
-                String command = "list";
+            public void transfer(TransferOperation.Fetcher fetcher) throws Exception {
+                String command = "listErrands";
                 String[] arguments = new String[]{"user=" + user};
-                Document d = fetch(command, arguments);
+                Document d = fetcher.fetch(command, arguments);
 
                 dataListener.onErrandsList(createErrands(d.getRootElement()), command, arguments);
             }
@@ -200,7 +201,7 @@ public class ServerConnection {
     public void listErrands(final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
         new TransferOperation(dataListener, nextDisplayable, onErrorScreen) {
 
-            public void transfer() throws Exception {
+            public void transfer(TransferOperation.Fetcher fetcher) throws Exception {
                 String command = "list";
                 QualifiedCoordinates location = eb.getPositioning().getPosition();
 
@@ -211,7 +212,7 @@ public class ServerConnection {
                     arguments = new String[]{"latitude=" + location.getLatitude(), "longitude=" + location.getLongitude()};
                 } // TODO: add location
 
-                Document d = fetch(command, arguments);
+                Document d = fetcher.fetch(command, arguments);
 
                 dataListener.onErrandsList(createErrands(d.getRootElement()), command, arguments);
             }
@@ -404,76 +405,11 @@ public class ServerConnection {
 
     }
 
-    private Document fetch(String path, String[] variables) throws Exception {
-
-        Thread.sleep(50); // The emulator is buggy without this. Sometimes no "yes" button is provided.
-
-        StringBuffer sb = new StringBuffer(address);
-        sb.append(path);
-
-        if (variables != null) {
-            for (int i = 0; i < variables.length; i++) {
-                if (i == 0) {
-                    sb.append("?");
-                } else {
-                    sb.append("&");
-                }
-                String variable = variables[i];
-                sb.append(variable);
-            }
-        }
-
-        //System.out.println("URL: " + sb.toString());
-        HttpConnection c = (HttpConnection) Connector.open(sb.toString());
-
-        KXmlParser parser = new KXmlParser();
-        parser.setInput(c.openInputStream(), "UTF-8");
-        Document d = new Document();
-        d.parse(parser);
-        int responseCode = c.getResponseCode();
-        c.close();
-
-        System.out.println("CONNECTION: " + sb.toString());
-
-        if (d.getChildCount() > 0 && responseCode == 200) {
-            Element root = d.getRootElement();
-
-            boolean error = false;
-            String message = null;
-            boolean statusFound = false;
-
-            if (root.getName().equalsIgnoreCase("response")) {
-                for (int i = 0; i < d.getChildCount(); i++) {
-                    if (root.getChild(i) instanceof Element) {
-                        Element element = d.getElement(i);
-                        if (element.getName().equalsIgnoreCase("status")) {
-                            statusFound = true;
-                            String response = element.getText(0);
-                            if (!response.equalsIgnoreCase("ok")) {
-                                error = true;
-                            }
-                        } else if (element.getName().equalsIgnoreCase("message")) {
-                            message = element.getText(0);
-                        }
-                    }
-                }
-
-                if (error) {
-                    throw new OperationException(message);
-                } else if (!statusFound) {
-                    throw new OperationException("Status element not found in response message.");
-                }
-            }
-        } else {
-            throw new OperationException("Server response contained no data. Response code: " + responseCode);
-        }
-        return d;
-    }
-
     private abstract class TransferOperation extends Thread {
 
         private Displayable nextDisplayable,  onErrorScreen;
         private DataListener dataListener;
+        private boolean cancelled = false;
 
         public TransferOperation(final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
             this.nextDisplayable = nextDisplayable;
@@ -481,23 +417,32 @@ public class ServerConnection {
             this.dataListener = dataListener;
         }
 
-        public abstract void transfer() throws Exception;
+        public abstract void transfer(Fetcher fetcher) throws Exception;
 
         public void run() {
-            display.setCurrent(new TransferDisplay(display));
+            Fetcher fetcher = new Fetcher();
+            display.setCurrent(new TransferDisplay(display, new FetcherCanceller(fetcher, this)));
             try {
-                transfer();
+                transfer(fetcher);
+                if (cancelled) {
+                    return;
+                }
+
                 if (nextDisplayable != null) { // perhaps the datahandler wants to handle this
                     display.setCurrent(nextDisplayable);
                 }
             } catch (Exception e) {
+                if (cancelled) {
+                    return;
+                }
+
                 e.printStackTrace();
                 dataListener.onError(e);
                 if (onErrorScreen != null) { // should the datalistener handle the error?
                     Alert alert = new Alert("Communication error", e.getMessage(), null, AlertType.ERROR);
                     alert.setTimeout(Alert.FOREVER);
                     display.setCurrent(alert, onErrorScreen);
-                } else if(nextDisplayable != null) { // perhaps the datahandler wants to handle this
+                } else if (nextDisplayable != null) { // perhaps the datahandler wants to handle this
                     display.setCurrent(nextDisplayable);
                     display.setCurrent(nextDisplayable); // Some strange bug forced me to do this. On second error it didn't go "back" to nextDisplayable
                     try {
@@ -508,6 +453,144 @@ public class ServerConnection {
                     display.setCurrent(nextDisplayable);
                 }
             }
+        }
+
+        private void cancel() {
+            cancelled = true;
+            if (nextDisplayable != null) { // perhaps the datahandler wants to handle thisnt(nextDisplayable);
+                return;
+            } else {
+                dataListener.onError(new OperationException(true));
+                return;
+            }
+        }
+
+        private class Fetcher {
+
+            public HttpConnection c;
+            private boolean cancelled = false;
+
+            public void cancel() {
+                if (c != null) {
+                    cancelled = true;
+                    try {
+                        c.close();
+                        c.notify();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+
+            public Document fetch(String path, String[] variables) throws Exception {
+                try {
+                    Thread.sleep(50); // The emulator is buggy without this. Sometimes no "yes" button is provided.
+
+                    StringBuffer sb = new StringBuffer(address);
+                    sb.append(path);
+
+                    if (variables != null) {
+                        for (int i = 0; i < variables.length; i++) {
+                            if (i == 0) {
+                                sb.append("?");
+                            } else {
+                                sb.append("&");
+                            }
+                            String variable = variables[i];
+                            sb.append(variable);
+                        }
+                    }
+
+                    System.out.println("URL: " + sb.toString());
+                    c = (HttpConnection) Connector.open(sb.toString());
+                    KXmlParser parser = new KXmlParser();
+                    parser.setInput(c.openInputStream(), "UTF-8");
+                    
+                    /*
+                     InputStream is = c.openInputStream();
+                    StringBuffer strData = new StringBuffer();
+                    int data;
+                    while((data = is.read()) >= 0) {
+
+                        strData.append(new Character((char) data));
+                    }
+
+                    if (1 == 1) throw new IllegalStateException(strData.toString());
+
+                     */
+                    Document d = new Document();
+                    d.parse(parser);
+                    int responseCode = c.getResponseCode();
+                    c.close();
+
+                    //System.out.println("CONNECTION: " + sb.toString());
+
+                    if (d.getChildCount() > 0 && responseCode == 200) {
+                        Element root = d.getRootElement();
+
+                        boolean error = false;
+                        String message = null;
+                        boolean statusFound = false;
+
+                        if (root.getName().equalsIgnoreCase("response")) {
+                            for (int i = 0; i < root.getChildCount(); i++) {
+                                if (root.getChild(i) instanceof Element) {
+                                    Element element = d.getElement(i);
+                                    if (element.getName().equalsIgnoreCase("status")) {
+                                        statusFound = true;
+                                        String response = element.getText(0);
+                                        if (!response.equalsIgnoreCase("ok")) {
+                                            error = true;
+                                        }
+                                    } else if (element.getName().equalsIgnoreCase("message")) {
+                                        message = element.getText(0);
+                                    }
+                                }
+                            }
+
+                            if (error) {
+                                throw new OperationException(message);
+                            } else if (!statusFound) {
+                                throw new OperationException("Status element not found in response message.");
+                            }
+                        }
+                    } else {
+                        throw new OperationException("Server response contained no data. Response code: " + responseCode);
+                    }
+                    return d;
+
+                } catch (Exception e) { // catcher for cancelling cancellations.. :D
+                    if (cancelled) {
+                        throw new OperationException("Operation cancelled");
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Gives external classes the ability to cancel operations
+     */
+    public class FetcherCanceller {
+
+        private TransferOperation.Fetcher fetcher;
+        private TransferOperation transferOperation;
+
+        public FetcherCanceller(TransferOperation.Fetcher fetcher, TransferOperation transferOperation) {
+            this.fetcher = fetcher;
+        }
+
+        public void cancel() {
+            new Thread(new Runnable() {
+
+                public void run() {
+
+                    transferOperation.cancel();
+                    fetcher.cancel();
+                }
+            }).start();
         }
     }
 }
