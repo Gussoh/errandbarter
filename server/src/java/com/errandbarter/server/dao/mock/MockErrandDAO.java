@@ -21,16 +21,17 @@ public class MockErrandDAO implements ErrandDAO {
 	private Map<Integer, Errand> errands;
 	private AnswerDAO answerDAO;
 
-	public MockErrandDAO(Map<Integer, Errand> errands) {
+	public MockErrandDAO(Map<Integer, Errand> errands, AnswerDAO answerDAO) {
 		this.errands = errands;
+		this.answerDAO = answerDAO;
 	}
 
 	public Errand findById(Integer id) {
-		return errands.get(id);
+		return setAnswers(errands.get(id));
 	}
 
 	public List<Errand> findAll() {
-		return new ArrayList<Errand>(errands.values());
+		return setAnswers(new ArrayList<Errand>(errands.values()));
 	}
 
 	public void makePersistent(Errand errand) {
@@ -55,7 +56,7 @@ public class MockErrandDAO implements ErrandDAO {
 				if(distance < range) results.add(errand);
 			}
 		}
-		return results;
+		return setAnswers(results);
 	}
 
 	public List<Errand> findByOwner(String user) {
@@ -68,7 +69,7 @@ public class MockErrandDAO implements ErrandDAO {
 			}
 		}
 
-		return results;
+		return setAnswers(results);
 	}
 
 	/* return errands performed by a user */
@@ -86,7 +87,7 @@ public class MockErrandDAO implements ErrandDAO {
 				}
 			}
 		}
-		return results;
+		return setAnswers(results);
 	}
 
 	public void setAnswerDAO(AnswerDAO answerDAO) {
@@ -119,6 +120,17 @@ public class MockErrandDAO implements ErrandDAO {
 				* (long_b - long_a) * Math.cos(lat_a / 57.3) * 69.1
 				* (long_b - long_a) * Math.cos(lat_a / 57.3);*/
 
+	}
+	
+	private Errand setAnswers(Errand errand) {
+		errand.setAnswers(answerDAO.findByErrand(errand.getId()));
+		return errand;
+	}
+
+	private List<Errand> setAnswers(List<Errand> errands) {
+		for(Errand errand: errands) 
+			errand.setAnswers(answerDAO.findByErrand(errand.getId()));
+		return errands;
 	}
 
 }
