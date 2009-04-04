@@ -31,7 +31,7 @@ public class ErrandForm extends Form implements DataListener, CommandListener, I
     private Command openCommand = new Command("Open", Command.ITEM, 0);
 
     private IconItem ownerItem;
-    private IconItem descriptionItem;
+    private StringItem descriptionItem;
     private IconItem updateItem;
     private IconItem answerItem;
     private IconItem locationItem;
@@ -51,7 +51,7 @@ public class ErrandForm extends Form implements DataListener, CommandListener, I
         this.previous = previous;
 
 ownerItem = new IconItem(eb, Icons.getInstance().user, "Owner", "?");
-descriptionItem = new IconItem(eb, Icons.getInstance().description, "Description", "?");
+descriptionItem = new StringItem("Description", "?");
 updateItem = new IconItem(eb, Icons.getInstance().update, "Update", "");
 answerItem = new IconItem(eb, Icons.getInstance().answer_add, "Write answer", "");
 locationItem = new IconItem(eb, Icons.getInstance().location, "Location", "?");

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package errandbarter.UI;
 
 import errandbarter.DataListener;
@@ -27,7 +26,6 @@ public class WriteAnswerForm extends TextBox implements DataListener, CommandLis
     private ErrandBarter eb;
     private Displayable previous;
     private Errand errand;
-
     private Command backCommand = new Command("Back", Command.BACK, 0);
     private Command submitCommand = new Command("Submit", Command.SCREEN, 0);
 
@@ -66,9 +64,32 @@ public class WriteAnswerForm extends TextBox implements DataListener, CommandLis
             if (size() < 1) {
                 Display.getDisplay(eb).setCurrent(new Alert("You must enter an answer."), this);
             } else {
-                eb.getServerConnection().performErrand(errand.getId(), getString(), this, null, this);
+                eb.getServerConnection().performErrand(errand.getId(), URLencode(getString()), this, null, this);
             }
         }
     }
 
+    private String URLencode(String s) {
+        if (s != null) {
+            StringBuffer tmp = new StringBuffer();
+            int i = 0;
+            try {
+                while (true) {
+                    int b = (int) s.charAt(i++);
+                    if ((b >= 0x30 && b <= 0x39) || (b >= 0x41 && b <= 0x5A) || (b >= 0x61 && b <= 0x7A)) {
+                        tmp.append((char) b);
+                    } else {
+                        tmp.append("%");
+                        if (b <= 0xf) {
+                            tmp.append("0");
+                        }
+                        tmp.append(Integer.toHexString(b));
+                    }
+                }
+            } catch (Exception e) {
+            }
+            return tmp.toString();
+        }
+        return null;
+    }
 }
