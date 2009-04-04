@@ -33,7 +33,7 @@ public class AnswerForm extends Form implements CommandListener, ItemCommandList
     private final Answer answer;
     private final Displayable previous;
     private IconItem userItem;
-    private IconItem answerItem;
+    private StringItem answerItem;
     private IconItem locationItem;
     private IconItem timeItem;
     private IconItem rewardedItem;
@@ -56,7 +56,7 @@ public class AnswerForm extends Form implements CommandListener, ItemCommandList
         userItem.setItemCommandListener(this);
         append(userItem);
 
-        answerItem = new IconItem(eb, Icons.getInstance().answer, "Answer", answer.getAnswer().trim());
+        answerItem = new StringItem("Answer", answer.getAnswer().trim());
         append(answerItem);
 
         locationItem = new IconItem(eb, Icons.getInstance().location, "Location", "lat: " + answer.getLocation().getLatitude() + " long: " + answer.getLocation().getLongitude());
