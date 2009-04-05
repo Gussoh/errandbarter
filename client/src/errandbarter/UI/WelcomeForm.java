@@ -63,6 +63,8 @@ public class WelcomeForm extends Form implements CommandListener, DataListener {
             serverAddress.setLabel("Server Address [error]");
             errorText.setText("Communication error with server. Correct URL? (" + e.getMessage() + ")");
         }
+
+        Display.getDisplay(eb).setCurrent(this);
     }
 
     public void onErrandsList(Vector errands, String command, String[] arguments) {

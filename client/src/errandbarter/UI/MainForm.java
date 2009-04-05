@@ -81,7 +81,17 @@ public class MainForm extends Form implements DataListener, CommandListener, Ite
         optionsItem.setItemCommandListener(this);
         append(optionsItem);
 
-        update();
+        new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                    update();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public void update() {

@@ -6,6 +6,7 @@ package errandbarter;
 
 import errandbarter.UI.TransferDisplay;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -411,10 +412,20 @@ public class ServerConnection {
         private DataListener dataListener;
         private boolean cancelled = false;
 
+        /**
+         *
+         * @param dataListener collects the data
+         * @param nextDisplayable show if everything is well. set to null to handle by dataListener
+         * @param onErrorScreen show on error, together with alert, null to handle by dataListener
+         */
         public TransferOperation(final DataListener dataListener, final Displayable nextDisplayable, final Displayable onErrorScreen) {
             this.nextDisplayable = nextDisplayable;
             this.onErrorScreen = onErrorScreen;
             this.dataListener = dataListener;
+
+            if (dataListener == null) {
+                throw new IllegalArgumentException("dataListener must not be null!");
+            }
         }
 
         public abstract void transfer(Fetcher fetcher) throws Exception;
@@ -436,28 +447,21 @@ public class ServerConnection {
                     return;
                 }
 
+                System.err.println("ERROR CAUGHT IN ServerConnection::run() datalistener: " + dataListener + ", nextDisp: " + nextDisplayable + ", errorDisp: " + onErrorScreen);
                 e.printStackTrace();
                 dataListener.onError(e);
                 if (onErrorScreen != null) { // should the datalistener handle the error?
-                    Alert alert = new Alert("Communication error", e.getMessage(), null, AlertType.ERROR);
+                    Alert alert = new Alert("Communication error", e.toString(), null, AlertType.ERROR);
                     alert.setTimeout(Alert.FOREVER);
                     display.setCurrent(alert, onErrorScreen);
-                } else if (nextDisplayable != null) { // perhaps the datahandler wants to handle this
-                    display.setCurrent(nextDisplayable);
-                    display.setCurrent(nextDisplayable); // Some strange bug forced me to do this. On second error it didn't go "back" to nextDisplayable
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                    display.setCurrent(nextDisplayable);
                 }
             }
         }
 
         private void cancel() {
             cancelled = true;
-            if (nextDisplayable != null) { // perhaps the datahandler wants to handle thisnt(nextDisplayable);
+            if (nextDisplayable != null) { // perhaps the datahandler wants to handle this
+                Display.getDisplay(eb).setCurrent(nextDisplayable);
                 return;
             } else {
                 dataListener.onError(new OperationException(true));
@@ -484,7 +488,7 @@ public class ServerConnection {
 
             public Document fetch(String path, String[] variables) throws Exception {
                 try {
-                    Thread.sleep(50); // The emulator is buggy without this. Sometimes no "yes" button is provided.
+                    Thread.sleep(50); // The emulator is buggy without this. Sometimes no "yes" button is provided. probably some threading error somewhere....
 
                     StringBuffer sb = new StringBuffer(address);
                     sb.append(path);
@@ -504,27 +508,27 @@ public class ServerConnection {
                     System.out.println("URL: " + sb.toString());
                     c = (HttpConnection) Connector.open(sb.toString());
                     KXmlParser parser = new KXmlParser();
+
                     parser.setInput(c.openInputStream(), "UTF-8");
-                    
+
                     /*
-                     InputStream is = c.openInputStream();
+                    InputStream is = c.openInputStream();
                     StringBuffer strData = new StringBuffer();
                     int data;
                     while((data = is.read()) >= 0) {
 
-                        strData.append(new Character((char) data));
+                    strData.append((char) data);
                     }
 
-                    if (1 == 1) throw new IllegalStateException(strData.toString());
-
-                     */
+                    if (1 == 1) throw new IllegalStateException(strData.toString());*/
+                    
+                     
                     Document d = new Document();
                     d.parse(parser);
                     int responseCode = c.getResponseCode();
                     c.close();
 
-                    //System.out.println("CONNECTION: " + sb.toString());
-
+                    
                     if (d.getChildCount() > 0 && responseCode == 200) {
                         Element root = d.getRootElement();
 
@@ -535,7 +539,7 @@ public class ServerConnection {
                         if (root.getName().equalsIgnoreCase("response")) {
                             for (int i = 0; i < root.getChildCount(); i++) {
                                 if (root.getChild(i) instanceof Element) {
-                                    Element element = d.getElement(i);
+                                    Element element = root.getElement(i);
                                     if (element.getName().equalsIgnoreCase("status")) {
                                         statusFound = true;
                                         String response = element.getText(0);
