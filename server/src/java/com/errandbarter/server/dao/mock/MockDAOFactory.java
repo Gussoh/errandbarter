@@ -32,9 +32,9 @@ public class MockDAOFactory implements DAOFactory {
 	protected MockDAOFactory() {
         //init mock DAOs with mock data and populate data (TODO)
         Map<String, User> userDB = new Hashtable<String, User>();
-        userDB.put("zach", new User("zach", 100, 50, 0.8));
-        userDB.put("daniel", new User("daniel", 100, 50, 0.8));
-        userDB.put("gustav", new User("gustav", 100, 50, 0.8));
+        userDB.put("zach", new User("zach", 120, 40, 0.8));
+        userDB.put("daniel", new User("daniel", 130, 50, 0.8));
+        userDB.put("gustav", new User("gustav", 140, 60, 0.8));
         //lklklkl
         userDAO = new MockUserDAO(userDB);
         
