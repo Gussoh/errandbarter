@@ -45,9 +45,9 @@ public class MockDAOFactory implements DAOFactory {
 			String information) {
          */
         answerDB.put(1, new Answer(1, 1, "daniel", new Date(), 1.314, 103.8453, 0, "Amy"));
-        answerDB.put(1, new Answer(1, 2, "gustav", new Date(), 1.313, 103.8365, 0, "$5 at stall 1"));
-        answerDB.put(1, new Answer(1, 2, "daniel", new Date(), 1.313, 103.8365, 0, "$4 at stall 5"));
-        answerDB.put(1, new Answer(1, 3, "zach", new Date(), 1.310, 103.8396, 0, "April 1"));
+        answerDB.put(2, new Answer(2, 2, "gustav", new Date(), 1.313, 103.8365, 0, "$5 at stall 1"));
+        answerDB.put(3, new Answer(3, 2, "daniel", new Date(), 1.313, 103.8365, 0, "$4 at stall 5"));
+        answerDB.put(4, new Answer(4, 3, "zach", new Date(), 1.310, 103.8396, 0, "April 1"));
         answerDAO = new MockAnswerDAO(answerDB);
         
         Map<Integer, Errand> errandDB = new Hashtable<Integer, Errand>();
