@@ -1,4 +1,6 @@
 = Model = 
+{{{ 
+
 Errand 
 - int errandID
 - List<Answer> answers;
@@ -23,10 +25,10 @@ Answer
 Response
 - String status
 - String message
+}}}
 
-<answer id="2145442" user="Peter" timestamp="xxx" latitude="x" longitude="y">
 = Data Access Objects = 
-
+{{{
 interface ErrandDAO {
 
 Errand getErrand(int id);
@@ -47,18 +49,21 @@ saveAnswer(Answer answer) //if id = NULL create
 interface UserDAO {
  User getUser(String id)
 }
+}}}
 
 = Implementation of DAO = 
+{{{
 ErrandDAOImpl implements ErrandDAO {
 
   private Hashtable<Integer id, Errand errand> errands;
 
 }
+}}}
 
 = XMLWriter =
+{{{
 writeXML(List<Errand> Errands)
 writeXML(Errand errand)
 writeXML(User user)
 writeXML(Response response)
-
-= Servlets =
+}}}
