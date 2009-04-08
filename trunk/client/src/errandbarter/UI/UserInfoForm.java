@@ -27,6 +27,7 @@ public class UserInfoForm extends Form implements DataListener, CommandListener,
     private IconItem username;
     private IconItem balance;
     private IconItem disposable;
+    private StringItem reliability;
     private IconItem listAnsweredErrands;
     private IconItem listCreatedErrands;
     private ErrandBarter eb;
@@ -43,6 +44,7 @@ public class UserInfoForm extends Form implements DataListener, CommandListener,
         username = new IconItem(eb, Icons.getInstance().user, "Username", "?");
         balance = new IconItem(eb, Icons.getInstance().balance, "Balance", "?");
         disposable = new IconItem(eb, Icons.getInstance().balance_disposable, "Disposable Balance", "?");
+        reliability = new StringItem("Reliability", "?");
 
         listAnsweredErrands = new IconItem(eb, Icons.getInstance().errand_answered, "List errands answered by user", "");
         listCreatedErrands = new IconItem(eb, Icons.getInstance().errand_own, "List errands created by user", "");
@@ -50,6 +52,7 @@ public class UserInfoForm extends Form implements DataListener, CommandListener,
         append(username);
         append(balance);
         append(disposable);
+        append(reliability);
 
         listAnsweredErrands.setDefaultCommand(openCommand);
         listAnsweredErrands.setItemCommandListener(this);
@@ -79,6 +82,7 @@ public class UserInfoForm extends Form implements DataListener, CommandListener,
         username.setText(user.getId());
         balance.setText(user.getBalance() + "");
         disposable.setText(user.getBalance() + "");
+        reliability.setText((int) (user.getReliability() * 100) + "%");
     }
 
     public void onOK(String command, String[] arguments) {
