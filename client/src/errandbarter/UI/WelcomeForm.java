@@ -9,11 +9,8 @@ import errandbarter.Errand;
 import errandbarter.ErrandBarter;
 import errandbarter.OperationException;
 import errandbarter.RecordManager;
-import errandbarter.ServerConnection;
 import errandbarter.User;
 import java.util.Vector;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -30,7 +27,7 @@ import javax.microedition.rms.RecordStoreException;
 public class WelcomeForm extends Form implements CommandListener, DataListener {
 
     private ErrandBarter eb;
-    private TextField serverAddress = new TextField("Server Address", "http://localhost:8084/ErrandBarterServerProject/", 64, TextField.URL);
+    private TextField serverAddress = new TextField("Server Address", "http://155.69.104.36:8084/errandbarterserver/", 64, TextField.URL);
     private TextField userId = new TextField("Username", "", 64, TextField.ANY);
     private StringItem errorText = new StringItem("", "");
     private MainForm mf;
