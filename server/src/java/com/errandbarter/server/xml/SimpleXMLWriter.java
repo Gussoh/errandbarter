@@ -61,12 +61,12 @@ public class SimpleXMLWriter implements XMLWriter {
         + "</location><description>" + errand.getDescription()
         + "</description></errand>";
          */
-        errandXML += "<errand id=\"" + errand.getId() + "\" timeout=\"" + errand.getTimeout() + "\" user=\"" + errand.getUser() + "\" userReliability=\"" + errand.getUserReliability() + "\" price=\"" + errand.getPrice() + "\">\n<location lat=\"" + errand.getLocationLatitude() + "\" long=\"" + errand.getLocationLongtitude() + "\" range=\"" + errand.getLocationRange() + "\" distance=\"" + errand.getDistance() + "\">" + errand.getLocation() + "</location>\n<description>" + errand.getDescription() + "</description>\n<answers>";
+        errandXML += "<errand id=\"" + errand.getId() + "\" timeout=\"" + errand.getTimeout() + "\" user=\"" + errand.getUser() + "\" userReliability=\"" + errand.getUserReliability() + "\" price=\"" + errand.getPrice() + "\">\n<location latitude=\"" + errand.getLocationLatitude() + "\" longitude=\"" + errand.getLocationLongtitude() + "\" range=\"" + errand.getLocationRange() + "\" distance=\"" + errand.getDistance() + "\">" + errand.getLocation() + "</location>\n<description>" + errand.getDescription() + "</description>\n<answers>";
 
         // get list of answers for the errand
         if (errand.getAnswers() != null) {
             for (Answer answer : errand.getAnswers()) {
-                errandXML += "<answer id=\"" + answer.getId() + "\" user=\"" + answer.getUserID() + "\" timestamp=\"" + answer.getTimestamp().getTime() + "\" lat=\"" + answer.getLatitude() + "\" long=\"" + answer.getLongitude() + "\" pointsRewards=\"" + answer.getPointsRewarded() + "\">" + answer.getInformation() + "</answer>\n";
+                errandXML += "<answer id=\"" + answer.getId() + "\" user=\"" + answer.getUserID() + "\" timestamp=\"" + answer.getTimestamp().getTime() + "\" latitude=\"" + answer.getLatitude() + "\" longitude=\"" + answer.getLongitude() + "\" pointsRewards=\"" + answer.getPointsRewarded() + "\">" + answer.getInformation() + "</answer>\n";
             }
         }
         errandXML += "</answers>\n</errand>\n";
